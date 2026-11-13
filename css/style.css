@@ -1047,3 +1047,6 @@ body.world-night .world-chip .wd-moon { display: block; }
 .ws-keeper-actions .mini-btn:hover { background: var(--accent); }
 .ws-row.is-deal .ws-info p { color: #8ee6bd; }
 @media (max-width: 900px) { .world-sound { left: 14px; right: 14px; width: auto; } }
+
+.world-round svg { width: 18px; height: 18px; flex: none; }
+.world-round[aria-expanded="true"] { background: var(--accent); border-color: transparent; }

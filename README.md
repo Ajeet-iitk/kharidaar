@@ -106,3 +106,4 @@ No cookies, no tracking, no commerce. © 2026 Ajeet.
 - Added: toran bunting, springy/bouncy animation layer, bazaar crowd ambience (the mp3) plus footstep, bell and haggle sounds in the 3D world, mobile polish.
 - 3D bazaar: in-world day/night toggle (animated sun/moon), sound panel, cows, dogs, pigeons, balloon seller, kids, rickshaw, and chatty shopkeepers (ask price, bargain, daily pick).
 - Game section "Sabzi Ninja": swipe-to-slice with the diary's real edible items, patakha bombs, combos, best score saved locally.
+- Thela Rush runner game (shopping list timer, cows, rickshaws, horn, chai boost); 3D-bazaar shopping missions with budgets and per-item haggling; photo mode with a framed, shareable snapshot.

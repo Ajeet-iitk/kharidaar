@@ -767,6 +767,7 @@
         break;
       }
       case 'world': window.BazaarWorld?.open(); break;
+      case 'thela': $('#game').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' }); document.querySelector('[data-game-tab=thela]')?.click(); break;
       case 'game': $('#game').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' }); setTimeout(() => $('#gamePlay')?.focus({ preventScroll: true }), 700); break;
     }
   }

@@ -308,6 +308,10 @@
           this.noiseBurst({ dur: 0.8, gain: 0.16, from: 900, to: 90, q: 0.5 });
           this.tone({ freq: 90, type: 'sawtooth', dur: 0.6, gain: 0.12, slide: -60 });
           break;
+        case 'shutter':
+          this.noiseBurst({ dur: 0.05, gain: 0.12, from: 3000, to: 800, q: 1 });
+          this.noiseBurst({ dur: 0.07, gain: 0.1, from: 2200, to: 600, q: 1, delay: 0.09 });
+          break;
         case 'moo':
           this.tone({ freq: 150, type: 'sawtooth', dur: 0.9, gain: 0.05, slide: -45 });
           this.tone({ freq: 225, type: 'triangle', dur: 0.9, gain: 0.03, slide: -60 });

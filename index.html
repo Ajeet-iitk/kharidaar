@@ -349,6 +349,36 @@
             <button class="mini-btn" type="button" data-wonder="world" data-i18n="wonder.life.go">Meet the street</button>
           </div>
         </article>
+        <article class="wonder wonder-world" style="--i:12">
+          <span class="world-badge">NEW</span>
+          <span class="wonder-num">13</span>
+          <span class="wonder-icon">🛺</span>
+          <h3 data-i18n="wonder.thela.title">Thela Rush</h3>
+          <p data-i18n="wonder.thela.text">Push a handcart down a busy lane. Grab Memsahib’s shopping list before the timer ends, dodge cows and rickshaws, honk, and chug chai for turbo.</p>
+          <div class="wonder-actions">
+            <button class="mini-btn" type="button" data-wonder="thela" data-i18n="wonder.thela.go">Start the rush</button>
+          </div>
+        </article>
+        <article class="wonder wonder-world" style="--i:13">
+          <span class="world-badge">3D</span>
+          <span class="wonder-num">14</span>
+          <span class="wonder-icon">📝</span>
+          <h3 data-i18n="wonder.mission.title">Shopping missions</h3>
+          <p data-i18n="wonder.mission.text">In the 3D bazaar, a family member hands you a list and a budget. Find each item at the right stall and haggle to stay under it.</p>
+          <div class="wonder-actions">
+            <button class="mini-btn" type="button" data-wonder="world" data-i18n="wonder.mission.go">Get a mission</button>
+          </div>
+        </article>
+        <article class="wonder wonder-world" style="--i:14">
+          <span class="world-badge">3D</span>
+          <span class="wonder-num">15</span>
+          <span class="wonder-icon">📸</span>
+          <h3 data-i18n="wonder.photo.title">Photo mode</h3>
+          <p data-i18n="wonder.photo.text">Tap the camera in the 3D bazaar for a framed snapshot with a toran border. Share it straight from your phone.</p>
+          <div class="wonder-actions">
+            <button class="mini-btn" type="button" data-wonder="world" data-i18n="wonder.photo.go">Take a photo</button>
+          </div>
+        </article>
       </div>
     </div>
   </section>
@@ -358,10 +388,15 @@
       <div class="section-head">
         <div>
           <p class="eyebrow" data-i18n="game.eyebrow">Game</p>
-          <h2 data-i18n="game.title">Sabzi Ninja</h2>
+          <h2 data-i18n="game.title">Play the bazaar</h2>
         </div>
-        <p class="section-sub" data-i18n="game.sub">Every real grocery from the diary is flying through the air. Swipe to slice, keep your rotis, and dodge the patakha.</p>
+        <p class="section-sub" data-i18n="game.sub">Slice flying groceries in Sabzi Ninja, or push a handcart through a cow-clogged lane in Thela Rush. Every item is a real price from the diary.</p>
       </div>
+            <div class="game-tabs" role="tablist" aria-label="Games">
+        <button class="game-tab is-on" type="button" role="tab" aria-selected="true" data-game-tab="ninja">🥷 Sabzi Ninja</button>
+        <button class="game-tab" type="button" role="tab" aria-selected="false" data-game-tab="thela">🛺 Thela Rush</button>
+      </div>
+      <div class="game-panel" data-panel="ninja">
       <div class="game-hud" aria-live="polite">
         <div><small data-i18n="game.score">Score</small><b id="gameScore">0</b></div>
         <div><small data-i18n="game.best">Best</small><b id="gameBest">0</b></div>
@@ -381,6 +416,41 @@
           <h3 id="gameOverTitle">Game over</h3>
           <p id="gameOverStats"></p>
           <button class="btn btn-solid" id="gameAgain" type="button"><span data-i18n="game.again">Play again</span></button>
+        </div>
+      </div>
+      </div>
+      <div class="game-panel" data-panel="thela" hidden>
+        <div class="game-hud" aria-live="polite">
+          <div><small>Score</small><b id="thelaScore">0</b></div>
+          <div><small>Best</small><b id="thelaBest">0</b></div>
+          <div><small>Distance</small><b id="thelaDist">0m</b></div>
+          <div class="game-lives" id="thelaLives" aria-label="Lives"></div>
+        </div>
+        <div class="tl-list-bar">
+          <span class="tl-list-label">📝 Memsahib wants</span>
+          <div class="tl-list" id="thelaList"></div>
+          <i class="tl-timer" id="thelaTimer" aria-hidden="true"></i>
+        </div>
+        <div class="game-stage thela-stage" id="thelaStage">
+          <canvas id="thelaCanvas" aria-label="Thela Rush: steer a handcart down a busy bazaar lane, collect the shopping list and dodge cows and rickshaws"></canvas>
+          <div class="tl-controls" aria-hidden="false">
+            <button type="button" id="thelaLeft" aria-label="Move left">◀</button>
+            <button type="button" id="thelaHorn" class="tl-horn" aria-label="Honk the horn">📯 <span>HORN</span></button>
+            <button type="button" id="thelaRight" aria-label="Move right">▶</button>
+          </div>
+          <div class="game-overlay" id="thelaStart">
+            <p class="game-emoji" aria-hidden="true">🛺🐄🛒</p>
+            <h3>Thela Rush</h3>
+            <p>Push your handcart down the lane. Grab what Memsahib's list asks for before the timer runs out. Dodge cows, rickshaws and puddles. Honk to shoo sleepy cows aside. Chai ☕ makes you unstoppable.</p>
+            <p class="game-keys"><kbd>←</kbd> <kbd>→</kbd> / swipe to steer · <kbd>Space</kbd> / swipe up to honk</p>
+            <button class="btn btn-solid" id="thelaPlay" type="button"><span>Start the rush</span></button>
+          </div>
+          <div class="game-overlay" id="thelaOver" hidden>
+            <p class="game-emoji" aria-hidden="true">🍅</p>
+            <h3 id="thelaOverTitle">Thela toppled!</h3>
+            <p id="thelaOverStats"></p>
+            <button class="btn btn-solid" id="thelaAgain" type="button"><span>Run again</span></button>
+          </div>
         </div>
       </div>
     </div>
@@ -452,6 +522,8 @@
       <button class="world-chip" id="worldCartBtn" type="button" aria-pressed="false">
         <svg><use href="#i-cart"/></svg><span data-i18n="world.cart">Trolley</span><b id="worldCartCount">0</b>
       </button>
+      <button class="world-chip" id="worldMissionBtn" type="button" aria-pressed="false"><span aria-hidden="true">📝</span><span id="worldMissionLabel">Mission</span></button>
+      <button class="world-round" id="worldPhotoBtn" type="button" aria-label="Take a photo" title="Photo mode">📸</button>
       <button class="world-chip" id="worldDayBtn" type="button" aria-label="Day or night"><svg class="wd-sun"><use href="#i-sun"/></svg><svg class="wd-moon"><use href="#i-moon"/></svg><span id="worldDayLabel">Day</span></button>
       <button class="world-round" id="worldSoundBtn" type="button" aria-label="Sound" aria-expanded="false"><svg><use href="#i-music"/></svg></button>
       <button class="world-round" id="worldHelpBtn" type="button" aria-label="Controls">?</button>
@@ -471,6 +543,24 @@
     <label class="ws-line"><span>Volume</span><input type="range" id="worldVol" min="0" max="100" value="55" aria-label="Volume"><b id="worldVolLabel">55%</b></label>
     <label class="ws-line"><span>Music</span><input type="checkbox" id="worldMusic"></label>
     <label class="ws-line"><span>Crowd &amp; effects</span><input type="checkbox" id="worldSfx" checked></label>
+  </div>
+
+  <aside class="world-mission" id="worldMission" hidden aria-label="Shopping mission">
+    <div class="wm-head"><div><p class="eyebrow" id="wmGiver">Mission</p><h3 id="wmTitle">Shopping list</h3></div><button class="icon-btn" id="wmClose" type="button" aria-label="Close"><svg><use href="#i-close"/></svg></button></div>
+    <p class="wm-say" id="wmSay"></p>
+    <ul class="wm-list" id="wmList"></ul>
+    <div class="wm-budget"><div class="wm-bar"><i id="wmBar"></i></div><p id="wmBudget"></p></div>
+    <div class="wm-actions"><button class="mini-btn" id="wmNew" type="button">New list</button><span class="wm-stamps" id="wmStamps">🏅 0</span></div>
+  </aside>
+
+  <div class="world-flash" id="worldFlash" aria-hidden="true"></div>
+  <div class="world-photo" id="worldPhoto" hidden role="dialog" aria-label="Your photo">
+    <figure><img id="worldPhotoImg" alt="Snapshot of the 3D bazaar"><figcaption id="worldPhotoCap"></figcaption></figure>
+    <div class="wp-actions">
+      <button class="btn btn-solid" id="wpShare" type="button"><span>Share</span></button>
+      <a class="btn btn-ghost" id="wpSave" download="kharidaar-bazaar.png" href="#"><span>Save</span></a>
+      <button class="btn btn-ghost" id="wpClose" type="button"><span>Keep exploring</span></button>
+    </div>
   </div>
 
   <div class="world-reticle" aria-hidden="true"></div>
@@ -562,5 +652,6 @@
 <script src="js/app.js"></script>
 <script src="js/world.js"></script>
 <script src="js/game.js"></script>
+<script src="js/thela.js"></script>
 </body>
 </html>

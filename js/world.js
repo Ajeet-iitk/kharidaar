@@ -892,6 +892,7 @@
     } else if (kind === 'pick') {
       say(L.pickSay(name, money(dealPrice[it.id] ?? it.latest ?? 0) + unit));
       if (window.KharidaarBasket) window.KharidaarBasket.add(it.id);
+      missionGot(it.id);
       if (!cartOn) setCart(true);
       updateCartHud(); renderShelf(st);
       if (A) A.sfx('add');
@@ -998,13 +999,17 @@
     cartBtn.addEventListener('click', () => setCart(!cartOn));
     keeperBtns.forEach(b => b.addEventListener('click', () => keeperAction(b.dataset.keeper)));
     bindWorldControls();
+    bindMissionPhoto();
     helpBtn.addEventListener('click', () => { helpPop.hidden = !helpPop.hidden; });
 
     shelfBody.addEventListener('click', e => {
+      const hg = e.target.closest('[data-ws-haggle]');
+      if (hg) { haggleItem(hg.dataset.wsHaggle); return; }
       const btn = e.target.closest('[data-ws-add]');
       if (!btn) return;
       const id = btn.dataset.wsAdd;
       if (window.KharidaarBasket) window.KharidaarBasket.add(id);
+      missionGot(id);
       btn.classList.add('is-added');
       btn.innerHTML = '<svg><use href="#i-check"/></svg>';
       if (!cartOn) setCart(true);
@@ -1152,6 +1157,192 @@
     setInterval(syncDay, 1000);
   }
 
+
+  /* ---------------- missions: a shopping list with a budget ---------------- */
+  const MT = {
+    en: {
+      mission: 'Mission', title: 'Shopping list', newList: 'New list', at: 'at', need: 'Mission item',
+      says: g => `${g} says: "Beta, get these things and do not pay a rupee over the budget. Haggle hard!"`,
+      budget: (s, b) => `Spent ${money(s)} of ${money(b)}`,
+      over: (x) => `Over by ${money(x)}. Haggle for a better price on something you bought!`,
+      done: 'Mission complete!', doneSay: g => `${g} beams: "Shabaash! Right things, right price. Chai on me!"`,
+      noHaggle: n => `${n}: that is my final price, sahib!`, tired: n => `Enough haggling over ${n}, come back later!`,
+      givers: ['Dadi', 'Chaudhary ji', 'Mrs. Sharma', 'Chhotu bhaiya'],
+    },
+    hi: {
+      mission: 'मिशन', title: 'ख़रीदारी की सूची', newList: 'नई सूची', at: 'पर', need: 'मिशन का सामान',
+      says: g => `${g} कहते हैं: "बेटा, ये सामान लाओ और बजट से एक रुपया ज़्यादा नहीं। ख़ूब मोल-भाव करना!"`,
+      budget: (s, b) => `${money(s)} ख़र्च, बजट ${money(b)}`,
+      over: x => `${money(x)} ज़्यादा! जो ख़रीदा उसी पर और मोल-भाव करो!`,
+      done: 'मिशन पूरा!', doneSay: g => `${g} मुस्कुराए: "शाबाश! सही सामान, सही दाम। चाय मेरी तरफ़ से!"`,
+      noHaggle: n => `${n}: बस यही आख़िरी दाम है, साहब!`, tired: n => `${n} पर बहुत हुआ मोल-भाव, बाद में आना!`,
+      givers: ['दादी', 'चौधरी जी', 'शर्मा आंटी', 'छोटू भैया'],
+    },
+  };
+  const mt = () => MT[lang() === 'hi' || lang() === 'eh' ? 'hi' : 'en'];
+  const missionEl = document.getElementById('worldMission');
+  const msBtn = document.getElementById('worldMissionBtn');
+  let mission = null;
+  let stamps = 0;
+  try { stamps = Number(localStorage.getItem('kharidaar.stamps')) || 0; } catch (e) {}
+  const haggleTries = Object.create(null);
+
+  function paidFor(m) { const p = dealPrice[m.it.id]; return p != null ? p : (m.it.latest || 0); }
+  function missionSpent() { return mission ? mission.items.filter(m => m.got).reduce((s, m) => s + paidFor(m), 0) : 0; }
+  function isMissionItem(id) { return !!mission && !mission.done && mission.items.some(m => m.it.id === id); }
+
+  function newMission() {
+    const keys = Object.keys(D.categories).slice(0, 8).sort(() => Math.random() - .5).slice(0, 3);
+    const items = [];
+    keys.forEach(k => {
+      const pool = D.items.filter(it => it.category === k && (it.latest || 0) > 0).slice(0, 6);
+      if (pool.length) items.push({ it: pool[Math.floor(Math.random() * pool.length)], cat: k, got: false });
+    });
+    const sum = items.reduce((s, m) => s + m.it.latest, 0);
+    const givers = mt().givers;
+    mission = { items, budget: Math.ceil(sum * .94 / 5) * 5, done: false, giver: givers[Math.floor(Math.random() * givers.length)] };
+    missionEl.classList.remove('is-done');
+    renderMission();
+    if (!shelf.hidden && shelfStall) renderShelf(shelfStall);
+  }
+
+  function renderMission() {
+    const L = mt();
+    document.getElementById('worldMissionLabel').textContent = L.mission;
+    document.getElementById('wmGiver').textContent = mission ? mission.giver : L.mission;
+    document.getElementById('wmTitle').textContent = L.title;
+    document.getElementById('wmNew').textContent = L.newList;
+    document.getElementById('wmStamps').textContent = '🏅 ' + stamps;
+    if (!mission) return;
+    document.getElementById('wmSay').textContent = mission.done ? L.doneSay(mission.giver) : L.says(mission.giver);
+    document.getElementById('wmList').innerHTML = mission.items.map(m => `<li class="${m.got ? 'is-got' : ''}">
+      <b>${itemEmoji(m.it)}</b><span>${escapeHtml(itemName(m.it))}<small>${L.at} ${escapeHtml((D.categories[m.cat] || {}).emoji || '')} ${escapeHtml(catName(m.cat))}</small></span>
+      <em>${m.got ? '✓ ' + money(paidFor(m)) : money(m.it.latest)}</em></li>`).join('');
+    const spent = missionSpent();
+    const bar = document.getElementById('wmBar');
+    bar.style.width = Math.min(100, spent / mission.budget * 100) + '%';
+    bar.classList.toggle('is-over', spent > mission.budget);
+    const allGot = mission.items.every(m => m.got);
+    document.getElementById('wmBudget').textContent = mission.done ? L.done : (allGot && spent > mission.budget ? L.over(spent - mission.budget) : L.budget(spent, mission.budget));
+  }
+
+  function checkMission() {
+    if (!mission || mission.done) return;
+    renderMission();
+    const spent = missionSpent();
+    if (mission.items.every(m => m.got) && spent <= mission.budget) {
+      mission.done = true; stamps++;
+      try { localStorage.setItem('kharidaar.stamps', String(stamps)); } catch (e) {}
+      missionEl.classList.add('is-done');
+      renderMission();
+      missionEl.hidden = false; msBtn.setAttribute('aria-pressed', 'true');
+      const A = window.KharidaarAudio;
+      if (A) { A.sfx('success'); setTimeout(() => A.sfx('coin'), 250); setTimeout(() => A.sfx('bell'), 500); }
+    }
+  }
+
+  function missionGot(id) {
+    if (!mission || mission.done) return;
+    const m = mission.items.find(x => x.it.id === id);
+    if (m && !m.got) { m.got = true; if (window.KharidaarAudio) window.KharidaarAudio.sfx('add'); }
+    checkMission();
+  }
+
+  function haggleItem(id) {
+    const st = shelfStall; if (!st) return;
+    const it = D.items.find(i => i.id === id); if (!it) return;
+    const A = window.KharidaarAudio, L = mt(), name = itemName(it);
+    if (dealPrice[id] != null) { say(L.noHaggle(name)); if (A) A.sfx('error'); return; }
+    haggleTries[id] = (haggleTries[id] || 0) + 1;
+    if (haggleTries[id] > 3) { say(L.tired(name)); if (A) A.sfx('error'); return; }
+    if (Math.random() < .62) {
+      const off = 6 + Math.floor(Math.random() * 11);
+      dealPrice[id] = Math.round((it.latest || 0) * (1 - off / 100));
+      say(kl().bargainWin(name, money(dealPrice[id]) + (it.unit ? ' / ' + it.unit : ''), off));
+      if (A) { A.sfx('haggle'); setTimeout(() => A.sfx('success'), 350); }
+    } else { say(kl().bargainNo(name)); if (A) A.sfx('error'); }
+    renderShelf(st);
+    renderMission();
+    checkMission();
+  }
+
+  /* ---------------- photo mode ---------------- */
+  let snapQueued = false;
+  function takePhoto() {
+    if (!active || snapQueued) return;
+    snapQueued = true;
+    renderer.render(scene, camera);          // fresh frame, read back in the same tick
+    showPhoto(composePhoto());
+    if (window.KharidaarAudio) window.KharidaarAudio.sfx('shutter');
+    const fl = document.getElementById('worldFlash');
+    fl.classList.remove('is-on'); void fl.offsetWidth; fl.classList.add('is-on');
+  }
+  function composePhoto() {
+    snapQueued = false;
+    const src = canvas, W = src.width, H = src.height;
+    const pad = Math.round(Math.min(W, H) * .045), cap = Math.round(pad * 2.6);
+    const out = document.createElement('canvas');
+    out.width = W + pad * 2; out.height = H + pad * 2 + cap;
+    const c = out.getContext('2d');
+    c.fillStyle = '#fbf3e2'; c.fillRect(0, 0, out.width, out.height);
+    // toran across the top of the frame
+    const tw = Math.round(pad * 1.5);
+    for (let x = 0, i = 0; x < out.width; x += tw, i++) {
+      c.fillStyle = ['#f4a300', '#d6336c', '#0f8b8d'][i % 3];
+      c.beginPath(); c.moveTo(x, 0); c.lineTo(x + tw, 0); c.lineTo(x + tw / 2, pad * .9 + (i % 2) * pad * .35); c.fill();
+    }
+    c.drawImage(src, pad, pad, W, H);
+    c.strokeStyle = '#2a1a10'; c.lineWidth = Math.max(2, pad * .08); c.strokeRect(pad, pad, W, H);
+    const base = pad + H + pad * .35;
+    c.fillStyle = '#d84a22'; c.font = `700 ${Math.round(cap * .46)}px Fraunces, Georgia, serif`; c.textBaseline = 'top'; c.textAlign = 'left';
+    c.fillText('kharidaar', pad, base);
+    const phase = nightMix > .55 ? (lang() === 'hi' ? 'रात' : 'night') : (lang() === 'hi' ? 'दिन' : 'day');
+    const where = nearest ? catName(nearest.catKey) : (lang() === 'hi' ? 'बाज़ार की गली' : 'the bazaar lane');
+    const date = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+    c.fillStyle = '#5a4636'; c.font = `500 ${Math.round(cap * .26)}px Outfit, system-ui, sans-serif`; c.textAlign = 'right';
+    c.fillText(`${where} · ${phase} · ${date}`, out.width - pad, base + cap * .08);
+    c.textAlign = 'left'; c.fillStyle = '#8a7a68'; c.font = `500 ${Math.round(cap * .22)}px Outfit, system-ui, sans-serif`;
+    c.fillText('the living bazaar', pad, base + cap * .5);
+    return out;
+  }
+  async function showPhoto(canvasOut) {
+    const url = canvasOut.toDataURL('image/png');
+    const img = document.getElementById('worldPhotoImg');
+    img.src = url;
+    document.getElementById('worldPhotoCap').textContent = lang() === 'hi' ? 'आपकी तस्वीर तैयार है' : 'Your bazaar snapshot';
+    const save = document.getElementById('wpSave'); save.href = url;
+    document.getElementById('worldPhoto').hidden = false;
+    photoBlob = await new Promise(r => canvasOut.toBlob(r, 'image/png'));
+  }
+  let photoBlob = null;
+
+  function bindMissionPhoto() {
+    msBtn.addEventListener('click', () => {
+      if (!mission) newMission();
+      missionEl.hidden = !missionEl.hidden;
+      msBtn.setAttribute('aria-pressed', String(!missionEl.hidden));
+      renderMission();
+    });
+    document.getElementById('wmClose').addEventListener('click', () => { missionEl.hidden = true; msBtn.setAttribute('aria-pressed', 'false'); });
+    document.getElementById('wmNew').addEventListener('click', () => { newMission(); if (window.KharidaarAudio) window.KharidaarAudio.sfx('click'); });
+    document.getElementById('worldPhotoBtn').addEventListener('click', takePhoto);
+    document.getElementById('wpClose').addEventListener('click', () => { document.getElementById('worldPhoto').hidden = true; });
+    document.getElementById('wpShare').addEventListener('click', async () => {
+      try {
+        const file = new File([photoBlob], 'kharidaar-bazaar.png', { type: 'image/png' });
+        if (navigator.canShare && navigator.canShare({ files: [file] })) await navigator.share({ files: [file], title: 'Kharidaar', text: 'A snapshot from the Kharidaar bazaar' });
+        else if (navigator.share) await navigator.share({ title: 'Kharidaar', text: 'A snapshot from the Kharidaar bazaar', url: location.href });
+        else document.getElementById('wpSave').click();
+      } catch (e) { /* cancelled */ }
+    });
+    document.addEventListener('keydown', e => {
+      if (!active || isTyping()) return;
+      if (e.key.toLowerCase() === 'p') takePhoto();
+      if (e.key.toLowerCase() === 'm') msBtn.click();
+    });
+    renderMission();
+  }
+
   function setCart(on) {
     cartOn = on;
     if (cart) cart.visible = on;
@@ -1185,9 +1376,11 @@
       return `<div class="ws-row ${deal ? 'is-deal' : ''}">
         <span class="ws-emoji" aria-hidden="true">${itemEmoji(it)}</span>
         <div class="ws-info">
+          ${isMissionItem(it.id) ? '<span class="ws-need">📝 ' + escapeHtml(mt().need) + '</span>' : ''}
           <h4>${escapeHtml(itemName(it))}</h4>
           <p>${deal ? '<s style="opacity:.55">' + money(it.latest) + '</s> ' + money(deal) : money(it.latest)}${it.unit ? ' / ' + escapeHtml(it.unit) : ''}</p>
         </div>
+        <button class="ws-haggle" type="button" data-ws-haggle="${escapeHtml(it.id)}" aria-label="Haggle" title="Haggle">🤝</button>
         <button class="ws-add ${has ? 'is-added' : ''}" type="button" data-ws-add="${escapeHtml(it.id)}" aria-label="${escapeHtml(t('market.add'))}" title="${escapeHtml(t('market.add'))}">
           <svg><use href="#i-${has ? 'check' : 'plus'}"/></svg>
         </button>

@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kharidaar — The Living Bazaar of Indian Prices</title>
+<meta name="description" content="A walkable bazaar built from two years of real price notes — apples, eggs, bus fares and haircuts from Delhi to Gorakhpur. Wander the stalls, watch the sun set, fill your basket.">
+<meta name="theme-color" content="#f7f1e6">
+<meta property="og:title" content="Kharidaar — The Living Bazaar">
+<meta property="og:description" content="Every rupee has a story. A day-to-night bazaar made from a real price diary.">
+<meta property="og:type" content="website">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Outfit:wght@300..700&family=Noto+Sans+Devanagari:wght@400..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script>
+  try {
+    var savedTheme = localStorage.getItem('kharidaar.theme');
+    var theme = savedTheme ? JSON.parse(savedTheme) : (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.dataset.theme = theme;
+    var savedLang = localStorage.getItem('kharidaar.lang');
+    if (savedLang) document.documentElement.dataset.lang = JSON.parse(savedLang);
+    var themeMeta = document.querySelector('meta[name="theme-color"]');
+    if (themeMeta) themeMeta.content = theme === 'dark' ? '#0d0c12' : '#f7f1e6';
+  } catch (e) {}
+</script>
+</head>
+<body>
+<a class="skip-link" href="#bazaar" data-i18n="a11y.skip">Skip to the bazaar</a>
+<div class="grain" aria-hidden="true"></div>
+
+<svg class="sprite" aria-hidden="true" width="0" height="0">
+  <symbol id="i-bag" viewBox="0 0 24 24"><path d="M6 8h12l1.2 12H4.8L6 8Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 9V6.5a3 3 0 0 1 6 0V9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M10 13.2c.5-1.7 3.1-1.7 3.6 0M10.2 13.2h3.6M10.6 15.4h3.2" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5 5l1.4 1.4M17.6 17.6 19 19M19 5l-1.4 1.4M6.4 17.6 5 19" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.4A8.4 8.4 0 0 1 9.6 4a8.4 8.4 0 1 0 10.4 10.4Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M17.5 4.5v2M16.5 5.5h2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></symbol>
+  <symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V6.5l10-2v11" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="6.5" cy="18" r="2.5" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="16.5" cy="15.5" r="2.5" fill="none" stroke="currentColor" stroke-width="1.7"/></symbol>
+  <symbol id="i-mute" viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="m16 9 5 6M21 9l-5 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></symbol>
+  <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="m16 16 4.5 4.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h16M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 20h16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 2.5c.6 5.4 3.1 8 8.5 8.6-5.4.6-7.9 3.2-8.5 8.6-.6-5.4-3.1-8-8.5-8.6 5.4-.6 7.9-3.2 8.5-8.6Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.6 4.5L19 6.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</svg>
+
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="#top" aria-label="Kharidaar home">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 40 40"><defs><linearGradient id="bagGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--gold)"/></linearGradient></defs><path d="M8 13h24l2 22H6L8 13Z" fill="url(#bagGrad)" opacity=".95"/><path d="M14.5 15V10a5.5 5.5 0 0 1 11 0v5" fill="none" stroke="var(--ink)" stroke-width="2.4" stroke-linecap="round"/><path d="M16 22c1-3.2 7-3.2 8 0M16.5 22h7M17 27h6" fill="none" stroke="#fff8ec" stroke-width="2" stroke-linecap="round"/></svg>
+      </span>
+      <span class="brand-word">kharidaar<small data-i18n="brand.tag">the living bazaar</small></span>
+    </a>
+
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#bazaar" data-nav="bazaar" data-i18n="nav.bazaar">Bazaar</a>
+      <a href="#ledger" data-nav="ledger" data-i18n="nav.ledger">Ledger</a>
+      <a href="#explore" data-nav="explore" data-i18n="nav.explore">Explore</a>
+      <a href="#about" data-nav="about" data-i18n="nav.about">About</a>
+    </nav>
+
+    <div class="nav-tools">
+      <div class="lang-switch" role="group" aria-label="Language">
+        <button type="button" data-lang-btn="en" class="is-on">EN</button>
+        <button type="button" data-lang-btn="hi">हि</button>
+        <button type="button" data-lang-btn="eh">EH</button>
+      </div>
+      <button class="icon-btn theme-btn" id="themeBtn" type="button" aria-label="Switch theme">
+        <svg class="ic-sun"><use href="#i-sun"/></svg>
+        <svg class="ic-moon"><use href="#i-moon"/></svg>
+      </button>
+      <button class="icon-btn" id="soundBtn" type="button" aria-label="Sound controls" aria-expanded="false">
+        <svg class="ic-music"><use href="#i-music"/></svg>
+        <span class="eq" aria-hidden="true"><i></i><i></i><i></i></span>
+      </button>
+      <button class="icon-btn basket-btn" id="basketBtn" type="button" aria-label="Open basket">
+        <svg><use href="#i-bag"/></svg>
+        <span class="basket-count" id="basketCount">0</span>
+      </button>
+      <button class="icon-btn menu-btn" id="menuBtn" type="button" aria-label="Menu" aria-expanded="false">
+        <svg><use href="#i-menu"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="sound-pop" id="soundPop" hidden>
+    <div class="sound-head">
+      <span data-i18n="sound.title">Bazaar radio</span>
+      <button class="mini-x" id="soundClose" type="button" aria-label="Close"><svg><use href="#i-close"/></svg></button>
+    </div>
+    <p class="sound-track"><span class="eq" aria-hidden="true"><i></i><i></i><i></i></span> <span data-i18n="sound.track">Rooftop, 6:40 pm</span></p>
+    <div class="sound-row">
+      <button class="pill play-btn" id="musicToggle" type="button" aria-pressed="false"><span data-i18n="sound.play">Play</span></button>
+      <input type="range" id="volume" min="0" max="100" value="55" aria-label="Music volume">
+      <span id="volLabel">55%</span>
+    </div>
+    <label class="switch-row"><input type="checkbox" id="sfxToggle" checked> <span data-i18n="sound.sfx">Sound effects</span></label>
+    <div class="sound-row small">
+      <button class="pill ghost" id="melodyBtn" type="button" data-i18n="sound.melody">Play a little melody</button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero" id="top">
+    <canvas id="bazaarCanvas" aria-label="An illustrated bazaar with shoppers that changes from day to night" role="img"></canvas>
+    <div class="hero-veil" aria-hidden="true"></div>
+
+    <div class="hero-inner container">
+      <p class="eyebrow"><span class="live-dot"></span><span data-i18n="hero.kicker">A living price diary · 2025 → 2026</span></p>
+      <h1 class="hero-title" data-i18n-html="hero.title">Every rupee<br><em>has a story.</em></h1>
+      <p class="hero-sub" data-i18n="hero.sub">Kharidaar is a walkable bazaar built from two years of real grocery notes — apples, eggs, bus fares and haircuts, from Delhi to Gorakhpur. Wander the stalls, watch the sun set, fill your basket.</p>
+      <div class="hero-cta">
+        <a class="btn btn-solid" href="#bazaar"><span data-i18n="hero.cta">Enter the bazaar</span><svg><use href="#i-arrow"/></svg></a>
+        <button class="btn btn-ghost" id="playDayBtn" type="button"><svg><use href="#i-sun"/></svg><span data-i18n="hero.cta2">Play a whole day</span></button>
+      </div>
+      <dl class="hero-stats">
+        <div><dt data-i18n="stats.records">price notes</dt><dd id="statRecords">89</dd></div>
+        <div><dt data-i18n="stats.items">things tracked</dt><dd id="statItems">53</dd></div>
+        <div><dt data-i18n="stats.places">places</dt><dd id="statPlaces">6</dd></div>
+        <div><dt data-i18n="stats.span">days of diary</dt><dd id="statSpan">580</dd></div>
+      </dl>
+    </div>
+
+    <div class="scene-panel container">
+      <div class="scene-row">
+        <div class="scene-now">
+          <span class="scene-phase" id="scenePhase">Afternoon</span>
+          <strong id="sceneClock">15:20</strong>
+          <span class="scene-loc" data-i18n="scene.loc">in the bazaar</span>
+        </div>
+        <div class="scene-slider-wrap">
+          <input id="timeSlider" class="time-slider" type="range" min="0" max="1439" value="920" step="1" aria-label="Time of day">
+          <div class="scene-hint"><span data-i18n="scene.hint">Drag the sun · tap a shopper</span></div>
+        </div>
+        <div class="scene-actions">
+          <button class="mini-btn" id="dayNightBtn" type="button" aria-pressed="false"><span data-i18n="scene.auto">Auto day</span></button>
+          <button class="mini-btn" id="crowdBtn" type="button"><span data-i18n="scene.crowd">Rush hour</span></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="ticker" aria-label="Latest price notes">
+    <div class="ticker-label"><span class="live-dot"></span><span data-i18n="ticker.label">Fresh off the ledger</span></div>
+    <div class="ticker-window"><div class="ticker-track" id="tickerTrack"></div></div>
+  </div>
+
+  <section class="section" id="bazaar">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow" data-i18n="market.eyebrow">The price board</p>
+          <h2 data-i18n="market.title">Stalls worth a wander</h2>
+        </div>
+        <p class="section-sub" data-i18n="market.sub">Every card is a real line from the ledger. Deltas compare like with like — per kilo, per litre, per piece.</p>
+      </div>
+
+      <div class="market-toolbar">
+        <label class="search-box">
+          <svg><use href="#i-search"/></svg>
+          <input id="searchInput" type="search" autocomplete="off" placeholder="Search apples, bus, haircut…" data-i18n-placeholder="market.search">
+          <kbd>/</kbd>
+        </label>
+        <div class="select-wrap">
+          <select id="placeSelect" aria-label="Filter by place"></select>
+        </div>
+        <div class="select-wrap">
+          <select id="sortSelect" aria-label="Sort stalls"></select>
+        </div>
+      </div>
+
+      <div class="chips" id="categoryChips" role="group" aria-label="Categories"></div>
+
+      <div class="results-line">
+        <span id="resultCount">53 stalls</span>
+        <button class="link-btn" id="resetFilters" type="button" data-i18n="market.clear">Clear filters</button>
+      </div>
+
+      <div class="stall-grid" id="stallGrid"></div>
+      <div class="market-more" id="marketMoreWrap">
+        <button class="btn btn-ghost" id="marketMore" type="button" data-i18n="market.more">Show more stalls</button>
+        <span class="market-more-note" id="marketMoreNote"></span>
+      </div>
+      <div class="empty-state" id="emptyState" hidden>
+        <span class="empty-art">🧺</span>
+        <h3 data-i18n="market.emptyTitle">No stall by that name</h3>
+        <p data-i18n="market.emptyText">Try “apple”, “bus”, or clear the filters and take another walk.</p>
+        <button class="btn btn-solid" id="emptyReset" type="button" data-i18n="market.clear">Clear filters</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-ink" id="ledger">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow" data-i18n="ledger.eyebrow">The ledger</p>
+          <h2 data-i18n="ledger.title">Notes from the market</h2>
+        </div>
+        <p class="section-sub" data-i18n="ledger.sub">The diary, exactly as it was written. Bundles, typos, “leads to loose motion” and all.</p>
+      </div>
+      <div class="chips ledger-chips" id="placeChips" role="group" aria-label="Ledger places"></div>
+      <ol class="ledger-list" id="ledgerList"></ol>
+      <div class="ledger-more">
+        <button class="btn btn-ghost" id="ledgerMore" type="button" data-i18n="ledger.more">Turn a few more pages</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="explore">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow" data-i18n="explore.eyebrow">Explore</p>
+          <h2 data-i18n="explore.title">Wonders of the bazaar</h2>
+        </div>
+        <p class="section-sub" data-i18n="explore.sub">Small experiments hidden in the market. Pull a lever — every card does something.</p>
+      </div>
+
+      <div class="explore-grid">
+        <article class="wonder" style="--i:0">
+          <span class="wonder-num">01</span>
+          <span class="wonder-icon">🌗</span>
+          <h3 data-i18n="wonder.day.title">The living sky</h3>
+          <p data-i18n="wonder.day.text">Dawn, noon, dusk and a lamp-lit night — painted live on canvas, complete with birds, stars and sleepy streets.</p>
+          <div class="wonder-actions">
+            <button class="mini-btn" type="button" data-wonder="dawn" data-i18n="wonder.day.dawn">Take me to dawn</button>
+            <button class="mini-btn" type="button" data-wonder="night" data-i18n="wonder.day.night">Make it night</button>
+          </div>
+        </article>
+
+        <article class="wonder" style="--i:1">
+          <span class="wonder-num">02</span>
+          <span class="wonder-icon">⏳</span>
+          <h3 data-i18n="wonder.time.title">Time machine</h3>
+          <p data-i18n="wonder.time.text">Play 24 hours in 30 seconds. Watch the shoppers go home, the lamps wake up, and the sky change its mind.</p>
+          <div class="wonder-actions">
+            <button class="mini-btn" type="button" data-wonder="cycle" data-i18n="wonder.time.play">Play the day</button>
+          </div>
+        </article>
+
+        <article class="wonder" style="--i:2">
+          <span class="wonder-num">03</span>
+          <span class="wonder-icon">🧮</span>
+          <h3 data-i18n="wonder.lens.title">The fair-price lens</h3>
+          <p data-i18n="wonder.lens.text">₹250 for 250 g and ₹120 a kilo shouldn’t be compared raw. Kharidaar normalises every note to ₹/kg, ₹/L or ₹/piece.</p>
+          <div class="wonder-actions">
+            <button class="mini-btn" type="button" data-wonder="duel" data-i18n="wonder.lens.go">Start a price duel</button>
+          </div>
+        </article>
+
+        <article class="wonder" style="--i:3">
+          <span class="wonder-num">04</span>
+          <span class="wonder-icon">🧾</span>
+          <h3 data-i18n="wonder.receipt.title">The receipt forge</h3>
+          <p data-i18n="wonder.receipt.text">Fill a basket, then forge a kirana-style bill — including how much your basket has inflated since its first note.</p>
+          <div class="wonder-actions">
+            <button class="mini-btn" type="button" data-wonder="fill" data-i18n="wonder.receipt.fill">Surprise basket</button>
+            <button class="mini-btn" type="button" data-wonder="basket" data-i18n="wonder.receipt.open">Open basket</button>
+          </div>
+        </article>
+
+        <article class="wonder" style="--i:4">
+          <span class="wonder-num">05</span>
+          <span class="wonder-icon">🗣️</span>
+          <h3 data-i18n="wonder.lang.title">Three tongues</h3>
+          <p data-i18n="wonder.lang.text">English, हिन्दी, or a comfortably bilingual EH. The whole bazaar changes language, including the fruit.</p>
+          <div class="wonder-actions">
+            <button class="mini-btn" type="button" data-wonder="lang" data-i18n="wonder.lang.go">Cycle languages</button>
+          </div>
+        </article>
+
+        <article class="wonder" style="--i:5">
+          <span class="wonder-num">06</span>
+          <span class="wonder-icon">🎵</span>
+          <h3 data-i18n="wonder.sound.title">The sound garden</h3>
+          <p data-i18n="wonder.sound.text">No audio files, just maths: a warm procedural raga-ish loop, cart clacks, and tiny clicks for every stall.</p>
+          <div class="wonder-actions">
+            <button class="mini-btn" type="button" data-wonder="melody" data-i18n="wonder.sound.play">Pluck a melody</button>
+            <button class="mini-btn" type="button" data-wonder="sound" data-i18n="wonder.sound.controls">Sound controls</button>
+          </div>
+        </article>
+
+        <article class="wonder" style="--i:6">
+          <span class="wonder-num">07</span>
+          <span class="wonder-icon">🚶</span>
+          <h3 data-i18n="wonder.npc.title">NCP, but make it bazaar</h3>
+          <p data-i18n="wonder.npc.text">Non-character players wander the lanes with their own opinions about apple prices. Tap one to hear the gossip.</p>
+          <div class="wonder-actions">
+            <button class="mini-btn" type="button" data-wonder="gossip" data-i18n="wonder.npc.go">Hear some gossip</button>
+          </div>
+        </article>
+
+        <article class="wonder" style="--i:7">
+          <span class="wonder-num">08</span>
+          <span class="wonder-icon">⌨️</span>
+          <h3 data-i18n="wonder.keys.title">Shortcut garden</h3>
+          <p data-i18n="wonder.keys.text">Tap <kbd>/</kbd> to search, <kbd>B</kbd> for basket, <kbd>T</kbd> for theme, <kbd>M</kbd> for music, <kbd>Esc</kbd> to close. Try not to press them all at once.</p>
+          <div class="wonder-actions">
+            <button class="mini-btn" type="button" data-wonder="search" data-i18n="wonder.keys.try">Focus the search</button>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section about" id="about">
+    <div class="container about-grid">
+      <div class="about-copy">
+        <p class="eyebrow" data-i18n="about.eyebrow">About this place</p>
+        <h2 data-i18n="about.title">A small monument to everyday prices.</h2>
+        <p data-i18n="about.text1">“Kharidaar” means buyer. This bazaar is built from a real spreadsheet kept between April 2025 and November 2026 — apples in Delhi, litchi in Ghazipur, a bus to Varanasi, one tetanus shot, one haircut.</p>
+        <p data-i18n="about.text2">Nothing here is for sale. There is no checkout, no affiliate link, no “add to cart” that ships anything. It is a price diary you can walk through, because memory is a better storefront than a sale.</p>
+        <div class="about-actions">
+          <a class="btn btn-solid" href="https://docs.google.com/spreadsheets/d/1hwVcnyeRMP8Zh_G32qj-9qftLvwJ8308KE55PD9148c/edit" target="_blank" rel="noopener"><span data-i18n="about.source">See the source sheet</span><svg><use href="#i-arrow"/></svg></a>
+          <a class="btn btn-ghost" href="https://github.com/Ajeet-iitk/kharidaar" target="_blank" rel="noopener"><span data-i18n="about.code">Read the code</span></a>
+        </div>
+      </div>
+      <aside class="about-card">
+        <div class="about-card-top">
+          <span class="live-dot"></span>
+          <span data-i18n="about.cardTitle">Field notes</span>
+        </div>
+        <ul class="about-facts">
+          <li><span data-i18n="about.f1">First note</span><strong id="factFirst">9 Apr 2025</strong></li>
+          <li><span data-i18n="about.f2">Last note</span><strong id="factLast">11 Nov 2026</strong></li>
+          <li><span data-i18n="about.f3">Cheapest note</span><strong id="factCheap">₹4</strong></li>
+          <li><span data-i18n="about.f4">Dearest note</span><strong id="factDear">₹2,170</strong></li>
+          <li><span data-i18n="about.f5">Most-tracked</span><strong id="factTop">Apples</strong></li>
+        </ul>
+        <p class="about-fine" data-i18n="about.fine">Prices are as recorded, not audited. Places are where the note was written, not necessarily where the thing was made. Beautifully messy, like all receipts.</p>
+      </aside>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div>
+      <a class="brand footer-brand" href="#top"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M8 13h24l2 22H6L8 13Z" fill="var(--accent)"/><path d="M14.5 15V10a5.5 5.5 0 0 1 11 0v5" fill="none" stroke="var(--ink)" stroke-width="2.4" stroke-linecap="round"/><path d="M16 22c1-3.2 7-3.2 8 0M16.5 22h7M17 27h6" fill="none" stroke="#fff8ec" stroke-width="2" stroke-linecap="round"/></svg></span><span class="brand-word">kharidaar</span></a>
+      <p data-i18n="footer.line">Made with sunsets, sound and a stubborn spreadsheet.</p>
+    </div>
+    <div class="footer-links">
+      <a href="#bazaar" data-i18n="nav.bazaar">Bazaar</a>
+      <a href="#ledger" data-i18n="nav.ledger">Ledger</a>
+      <a href="#explore" data-i18n="nav.explore">Explore</a>
+      <a href="https://github.com/Ajeet-iitk/kharidaar" target="_blank" rel="noopener">GitHub</a>
+    </div>
+    <p class="footer-fine"><span data-i18n="footer.rights">No cookies, no cart, no commerce.</span> © <span id="year">2026</span> Ajeet</p>
+  </div>
+</footer>
+
+<aside class="basket-panel" id="basketPanel" aria-hidden="true" aria-label="Basket">
+  <div class="basket-head">
+    <div>
+      <p class="eyebrow" data-i18n="basket.eyebrow">Your toki</p>
+      <h3 data-i18n="basket.title">The basket</h3>
+    </div>
+    <button class="icon-btn" id="basketClose" type="button" aria-label="Close basket"><svg><use href="#i-close"/></svg></button>
+  </div>
+  <div class="basket-body" id="basketBody"></div>
+  <div class="basket-foot">
+    <div class="basket-total"><span data-i18n="basket.total">Basket, at last recorded prices</span><strong id="basketTotal">₹0</strong></div>
+    <p class="basket-note" id="basketNote"></p>
+    <div class="basket-actions">
+      <button class="btn btn-solid" id="checkoutBtn" type="button"><span data-i18n="basket.checkout">Forge the receipt</span><svg><use href="#i-arrow"/></svg></button>
+      <button class="link-btn" id="basketClear" type="button" data-i18n="basket.clear">Empty basket</button>
+    </div>
+  </div>
+</aside>
+<div class="scrim" id="scrim" hidden></div>
+
+<dialog class="modal item-modal" id="itemDialog">
+  <div class="modal-inner" id="itemDialogBody"></div>
+</dialog>
+
+<dialog class="modal receipt-modal" id="receiptDialog">
+  <div class="modal-inner">
+    <button class="modal-x icon-btn" data-close-dialog type="button" aria-label="Close"><svg><use href="#i-close"/></svg></button>
+    <div id="receiptContent"></div>
+    <div class="receipt-actions">
+      <button class="btn btn-solid" id="downloadReceipt" type="button"><svg><use href="#i-download"/></svg><span data-i18n="receipt.download">Save receipt</span></button>
+      <button class="btn btn-ghost" id="anotherBasket" type="button" data-i18n="receipt.again">Fill another basket</button>
+    </div>
+  </div>
+</dialog>
+
+<dialog class="modal duel-modal" id="duelDialog">
+  <div class="modal-inner">
+    <button class="modal-x icon-btn" data-close-dialog type="button" aria-label="Close"><svg><use href="#i-close"/></svg></button>
+    <p class="eyebrow" data-i18n="duel.eyebrow">Price duel</p>
+    <h3 data-i18n="duel.title">Two stalls enter. One price wins.</h3>
+    <div id="duelBody"></div>
+    <button class="btn btn-solid" id="duelAgain" type="button" data-i18n="duel.again">Fight again</button>
+  </div>
+</dialog>
+
+<button class="mobile-basket" id="mobileBasket" type="button">
+  <svg><use href="#i-bag"/></svg><span data-i18n="basket.short">Basket</span><b>0</b>
+</button>
+
+<div class="toast-wrap" id="toastWrap" aria-live="polite"></div>
+<div class="confetti" id="confetti" aria-hidden="true"></div>
+
+<script src="js/data.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/bazaar.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

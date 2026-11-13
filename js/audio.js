@@ -98,6 +98,7 @@
 
     setSfx(on) {
       this.sfxOn = on;
+      if (this.amb && !this.amb.paused) this.amb.volume = on ? Math.min(1, 0.25 + this.volume * 0.75) : 0;
       if (this.sfxBus) this.sfxBus.gain.setTargetAtTime(on ? 1 : 0, this.ctx.currentTime, 0.05);
       this.savePrefs();
     }
@@ -292,10 +293,40 @@
           this.tone({ freq: 1180, type: 'square', dur: 0.09, gain: 0.04 });
           this.tone({ freq: 1560, type: 'square', dur: 0.16, gain: 0.035, delay: 0.06 });
           break;
+        case 'step': this.noiseBurst({ dur: 0.07, gain: 0.03, from: 500, to: 200, q: 1.2 }); break;
+        case 'bell':
+          [0, 7, 12].forEach((n, i) => this.tone({ freq: midi(84 + n), type: 'sine', dur: 0.5, gain: 0.04, delay: i * 0.11 }));
+          break;
+        case 'haggle':
+          [0, 4, 2, 7].forEach((n, i) => this.tone({ freq: midi(64 + n), type: 'triangle', dur: 0.12, gain: 0.04, delay: i * 0.1 }));
+          break;
         case 'gossip':
           [0, 3, 7, 10, 7].forEach((n, i) => this.tone({ freq: midi(70 + n), type: 'sine', dur: 0.14, gain: 0.05, delay: i * 0.07 }));
           break;
       }
+    }
+
+    /* looping bazaar crowd recording for the 3D world */
+    ambience(on) {
+      try {
+        if (!this.amb) {
+          this.amb = new Audio('freesound_community-bazaar-54568.mp3');
+          this.amb.loop = true;
+          this.amb.preload = 'auto';
+        }
+        clearInterval(this.ambFade);
+        const a = this.amb;
+        const goal = () => (on && this.sfxOn ? Math.min(1, 0.25 + this.volume * 0.75) : 0);
+        if (on) { const pr = a.play(); if (pr && pr.catch) pr.catch(() => {}); }
+        this.ambFade = setInterval(() => {
+          const g = goal();
+          a.volume = Math.max(0, Math.min(1, a.volume + Math.sign(g - a.volume) * Math.min(0.04, Math.abs(g - a.volume))));
+          if (Math.abs(g - a.volume) < 0.005) {
+            a.volume = g; clearInterval(this.ambFade);
+            if (!on) a.pause();
+          }
+        }, 50);
+      } catch (e) {}
     }
 
     melody() {

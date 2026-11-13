@@ -45,6 +45,8 @@
   let yaw = 0;
   let pitch = -0.02;
   let moveSpeed = 0;
+  let stepT = 0;
+  let calloutT = 4;
   let bob = 0;
 
   let nightMix = document.documentElement.dataset.theme === 'dark' ? 1 : 0;
@@ -954,7 +956,7 @@
     loading.classList.remove('is-done');
     loading.style.display = '';
     if (window.KharidaarAudio) window.KharidaarAudio.sfx('open');
-    if (!window.KharidaarAudio) { /* no-op */ }
+    if (window.KharidaarAudio) window.KharidaarAudio.ambience(true);
 
     try {
       if (!threePromise) threePromise = window.THREE ? Promise.resolve(window.THREE) : new Promise((res, rej) => {
@@ -985,6 +987,7 @@
     if (!active) return;
     active = false;
     cancelAnimationFrame(raf); raf = 0;
+    if (window.KharidaarAudio) window.KharidaarAudio.ambience(false);
     overlay.classList.remove('is-open');
     document.body.classList.remove('world-open');
     closeShelf();
@@ -1127,6 +1130,12 @@
 
     updateNight(dt);
     updatePlayer(dt);
+    const A = window.KharidaarAudio;
+    if (A) {
+      if (moveSpeed > .6) { stepT -= dt; if (stepT <= 0) { A.sfx('step'); stepT = 2.2 / Math.max(2, moveSpeed) * .8; } }
+      calloutT -= dt;
+      if (calloutT <= 0) { A.sfx(Math.random() < .5 ? 'bell' : 'haggle'); calloutT = 6 + Math.random() * 8; }
+    }
     updatePeople(dt);
     updateCart(dt);
     updatePrompt(false);

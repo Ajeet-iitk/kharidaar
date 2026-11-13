@@ -33,6 +33,19 @@
 
   const itemsById = new Map(D.items.map(i => [i.id, i]));
   const catKeys = Object.keys(D.categories);
+  const ITEM_EMOJI = {
+    apples: '🍎', kaju: '🥜', bus: '🚌', eggs: '🥚', carrots: '🥕', milk: '🥛',
+    paneer: '🧀', almonds: '🌰', beetroot: '🥬', 'black-chickpea': '🫘', litchi: '🍒',
+    onions: '🧅', oranges: '🍊', peas: '🫛', rice: '🍚', saloon: '💈', sprouts: '🌱',
+    airtel: '📱', battery: '🔋', besan: '🥣', bread: '🍞', brush: '🪥', bulb: '💡',
+    butter: '🧈', curd: '🥣', earphones: '🎧', egg: '🥚', food: '🍱', fruits: '🧺',
+    general: '🛍️', gift: '🎁', hajmola: '🍬', hotel: '🏨', laddu: '🍥', lentils: '🫘',
+    library: '📚', 'lip-balm': '💄', mango: '🥭', mask: '😷', medical: '🩺',
+    medicine: '💊', metro: '🚇', moongfali: '🥜', papaya: '🍈', pear: '🍐',
+    petha: '🍬', ro: '💧', 'sona-papdi': '🍮', spray: '🧴', teeth: '🦷',
+    tomatoes: '🍅', vegetables: '🥬', wheat: '🌾',
+  };
+  const itemEmoji = it => ITEM_EMOJI[it.id] || (D.categories[it.category] || {}).emoji || '🛒';
   const catName = key => {
     const c = D.categories[key];
     if (!c) return key;
@@ -251,11 +264,20 @@
     const inBasket = !!state.basket[it.id];
     return `<article class="stall" data-id="${esc(it.id)}" style="--cat:${cat.color || '#d84a22'}; --i:${index}" tabindex="0" role="button" aria-label="${esc(itemName(it))}">
       <div class="stall-top">
-        <span class="stall-emoji" aria-hidden="true">${cat.emoji || '🛒'}</span>
+        <span class="stall-emoji" aria-hidden="true">${itemEmoji(it)}</span>
         <span class="stall-place">${esc(placeName(lastPlace || ''))}</span>
         <span class="delta ${d.cls}" title="${esc(d.text)}">${esc(d.text)}</span>
       </div>
       <h3 class="stall-name">${esc(itemName(it))}${sub ? `<small>${esc(sub)}</small>` : ''}</h3>
+      <div class="shelf3d" aria-hidden="true">
+        <div class="shelf3d-stack">
+          <span class="shelf3d-pack p1"><b>${itemEmoji(it)}</b></span>
+          <span class="shelf3d-pack p2"><b>${itemEmoji(it)}</b></span>
+          <span class="shelf3d-pack p3"><b>${itemEmoji(it)}</b></span>
+          <i class="shelf3d-plank"></i>
+          <span class="shelf3d-tag">₹${new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 }).format(it.latest ?? 0)}</span>
+        </div>
+      </div>
       <div class="stall-price"><span class="cur">₹</span><span class="val">${new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 }).format(it.latest ?? 0)}</span><span class="unit">${esc(unitLabel(it.unit))}</span></div>
       <p class="stall-norm">${esc(norm)}</p>
       ${sparkline(it)}
@@ -743,6 +765,7 @@
         setTimeout(() => $('#searchInput').focus(), 500);
         break;
       }
+      case 'world': window.BazaarWorld?.open(); break;
     }
   }
 
@@ -847,6 +870,9 @@
   function bind() {
     // theme / sound
     $('#themeBtn').addEventListener('click', e => toggleTheme(e));
+    $('#enterBazaar')?.addEventListener('click', e => {
+      if (window.BazaarWorld) { e.preventDefault(); window.BazaarWorld.open(); }
+    });
     soundBtn.addEventListener('click', e => { e.stopPropagation(); toggleSoundPop(); });
     $('#soundClose').addEventListener('click', () => toggleSoundPop(false));
     musicToggle.addEventListener('click', toggleMusic);
@@ -933,8 +959,12 @@
       const card = e.target.closest('.stall');
       if (!card) return;
       const r = card.getBoundingClientRect();
+      const nx = (e.clientX - r.left) / Math.max(1, r.width) - .5;
+      const ny = (e.clientY - r.top) / Math.max(1, r.height) - .5;
       card.style.setProperty('--mx', (e.clientX - r.left) + 'px');
       card.style.setProperty('--my', (e.clientY - r.top) + 'px');
+      card.style.setProperty('--ry', (nx * 9).toFixed(2));
+      card.style.setProperty('--rx', (-ny * 7).toFixed(2));
     });
     $('#searchInput').addEventListener('input', e => {
       state.filters.q = e.target.value;
@@ -1092,6 +1122,21 @@
     document.addEventListener('pointerdown', armAudio);
     document.addEventListener('keydown', armAudio);
   }
+
+  /* ---------------- public hooks (3D bazaar etc.) ---------------- */
+  window.KharidaarBasket = {
+    add(id, qty = 1) { addToBasket(id, qty); },
+    count() { return Object.values(state.basket).reduce((a, b) => a + b, 0); },
+    has(id) { return !!state.basket[id]; },
+    open() { openBasket(); },
+  };
+  window.KharidaarL10n = {
+    t,
+    lang: () => state.lang,
+    itemName,
+    catName,
+    itemEmoji,
+  };
 
   /* ---------------- scroll nav ---------------- */
   function bindScroll() {

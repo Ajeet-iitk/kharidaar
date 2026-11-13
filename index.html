@@ -33,6 +33,7 @@
 
 <svg class="sprite" aria-hidden="true" width="0" height="0">
   <symbol id="i-bag" viewBox="0 0 24 24"><path d="M6 8h12l1.2 12H4.8L6 8Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 9V6.5a3 3 0 0 1 6 0V9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M10 13.2c.5-1.7 3.1-1.7 3.6 0M10.2 13.2h3.6M10.6 15.4h3.2" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-cart" viewBox="0 0 24 24"><path d="M3 4h2l2.2 10.2h9.9L19 7H6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="18.5" r="1.6" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="16.5" cy="18.5" r="1.6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 10h8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></symbol>
   <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5 5l1.4 1.4M17.6 17.6 19 19M19 5l-1.4 1.4M6.4 17.6 5 19" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
   <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.4A8.4 8.4 0 0 1 9.6 4a8.4 8.4 0 1 0 10.4 10.4Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M17.5 4.5v2M16.5 5.5h2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></symbol>
   <symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V6.5l10-2v11" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="6.5" cy="18" r="2.5" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="16.5" cy="15.5" r="2.5" fill="none" stroke="currentColor" stroke-width="1.7"/></symbol>
@@ -116,7 +117,7 @@
       <h1 class="hero-title" data-i18n-html="hero.title">Every rupee<br><em>has a story.</em></h1>
       <p class="hero-sub" data-i18n="hero.sub">Kharidaar is a walkable bazaar built from two years of real grocery notes — apples, eggs, bus fares and haircuts, from Delhi to Gorakhpur. Wander the stalls, watch the sun set, fill your basket.</p>
       <div class="hero-cta">
-        <a class="btn btn-solid" href="#bazaar"><span data-i18n="hero.cta">Enter the bazaar</span><svg><use href="#i-arrow"/></svg></a>
+        <a class="btn btn-solid" href="#bazaar" id="enterBazaar"><span data-i18n="hero.cta">Enter the bazaar</span><svg><use href="#i-arrow"/></svg></a>
         <button class="btn btn-ghost" id="playDayBtn" type="button"><svg><use href="#i-sun"/></svg><span data-i18n="hero.cta2">Play a whole day</span></button>
       </div>
       <dl class="hero-stats">
@@ -306,6 +307,16 @@
             <button class="mini-btn" type="button" data-wonder="search" data-i18n="wonder.keys.try">Focus the search</button>
           </div>
         </article>
+        <article class="wonder wonder-world" style="--i:8">
+          <span class="world-badge">3D</span>
+          <span class="wonder-num">09</span>
+          <span class="wonder-icon">🛒</span>
+          <h3 data-i18n="wonder.walk.title">The walkable bazaar</h3>
+          <p data-i18n="wonder.walk.text">Step through the arch into a real 3D bazaar: shelves of goods, shopkeepers, wandering shoppers, and a trolley that follows you.</p>
+          <div class="wonder-actions">
+            <button class="mini-btn" type="button" data-wonder="world" data-i18n="wonder.walk.go">Enter the 3D bazaar</button>
+          </div>
+        </article>
       </div>
     </div>
   </section>
@@ -355,6 +366,62 @@
     <p class="footer-fine"><span data-i18n="footer.rights">No cookies, no cart, no commerce.</span> © <span id="year">2026</span> Ajeet</p>
   </div>
 </footer>
+
+<section class="world" id="world" aria-hidden="true" aria-label="3D bazaar" hidden>
+  <canvas id="worldCanvas"></canvas>
+  <div class="world-vignette" aria-hidden="true"></div>
+
+  <div class="world-loading" id="worldLoading">
+    <span class="world-loader" aria-hidden="true"></span>
+    <p data-i18n="world.loading">Opening the shutters…</p>
+  </div>
+
+  <div class="world-bar">
+    <div class="world-title">
+      <span class="world-dot" aria-hidden="true"></span>
+      <div>
+        <p class="eyebrow" data-i18n="world.eyebrow">The 3D bazaar · walkable</p>
+        <h2 data-i18n="world.title">Walk the bazaar</h2>
+      </div>
+    </div>
+    <div class="world-tools">
+      <button class="world-chip" id="worldCartBtn" type="button" aria-pressed="false">
+        <svg><use href="#i-cart"/></svg><span data-i18n="world.cart">Trolley</span><b id="worldCartCount">0</b>
+      </button>
+      <button class="world-round" id="worldHelpBtn" type="button" aria-label="Controls">?</button>
+      <button class="world-exit" id="worldExit" type="button"><span data-i18n="world.exit">Leave the bazaar</span><svg><use href="#i-close"/></svg></button>
+    </div>
+  </div>
+
+  <p class="world-hint" data-i18n="world.hint">WASD / arrows to walk · drag to look · E to browse</p>
+  <p class="world-touch-hint" data-i18n="world.hintTouch">Left pad walks · drag anywhere to look</p>
+
+  <div class="world-tip" id="worldHelp" hidden>
+    <p data-i18n="world.help">Walk up to a stall, press E, and put things in your trolley.</p>
+    <p class="world-tip-keys"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> walk · <kbd>E</kbd> browse · <kbd>C</kbd> trolley · <kbd>Esc</kbd> leave</p>
+  </div>
+
+  <div class="world-reticle" aria-hidden="true"></div>
+
+  <div class="world-prompt" id="worldPrompt" hidden>
+    <p><b id="worldPromptCat"></b><small data-i18n="world.shelf">On the shelf</small></p>
+    <button class="btn btn-solid" id="worldBrowse" type="button"><span data-i18n="world.browseBtn">Browse</span><svg><use href="#i-arrow"/></svg></button>
+  </div>
+
+  <aside class="world-shelf" id="worldShelf" hidden aria-label="Shelf">
+    <div class="world-shelf-head">
+      <div>
+        <p class="eyebrow" data-i18n="world.shelf">On the shelf</p>
+        <h3 id="worldShelfTitle">Fruits &amp; Veg</h3>
+      </div>
+      <button class="icon-btn" id="worldShelfClose" type="button" aria-label="Close"><svg><use href="#i-close"/></svg></button>
+    </div>
+    <div class="world-shelf-body" id="worldShelfBody"></div>
+    <p class="world-shelf-foot" id="worldShelfFoot"></p>
+  </aside>
+
+  <div class="world-pad" id="worldPad" aria-hidden="true"><i></i></div>
+</section>
 
 <aside class="basket-panel" id="basketPanel" aria-hidden="true" aria-label="Basket">
   <div class="basket-head">
@@ -413,5 +480,6 @@
 <script src="js/audio.js"></script>
 <script src="js/bazaar.js"></script>
 <script src="js/app.js"></script>
+<script src="js/world.js"></script>
 </body>
 </html>

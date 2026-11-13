@@ -217,7 +217,7 @@
     const p = palette(state.minutes);
     const dark = darknessOf(p);
     const hour = state.minutes / 60;
-    const horizon = h * .545;
+    const horizon = h * (state.w < 720 ? .6 : .545);
     const camX = state.cam.x, camY = state.cam.y;
 
     ctx.clearRect(0, 0, w, h);

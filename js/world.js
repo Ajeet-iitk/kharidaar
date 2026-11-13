@@ -939,6 +939,11 @@
     const h = overlay.clientHeight || window.innerHeight;
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
+    // portrait phones: widen the vertical FOV so the stalls on both sides stay in view
+    const hFov = 84 * Math.PI / 180;
+    camera.fov = camera.aspect < 1.4
+      ? Math.min(100, 2 * Math.atan(Math.tan(hFov / 2) / camera.aspect) * 180 / Math.PI)
+      : 58;
     camera.updateProjectionMatrix();
   }
 

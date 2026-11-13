@@ -300,6 +300,18 @@
         case 'haggle':
           [0, 4, 2, 7].forEach((n, i) => this.tone({ freq: midi(64 + n), type: 'triangle', dur: 0.12, gain: 0.04, delay: i * 0.1 }));
           break;
+        case 'moo':
+          this.tone({ freq: 150, type: 'sawtooth', dur: 0.9, gain: 0.05, slide: -45 });
+          this.tone({ freq: 225, type: 'triangle', dur: 0.9, gain: 0.03, slide: -60 });
+          break;
+        case 'bark':
+          this.tone({ freq: 420, type: 'square', dur: 0.09, gain: 0.04, slide: -160 });
+          this.tone({ freq: 400, type: 'square', dur: 0.09, gain: 0.04, slide: -160, delay: 0.16 });
+          break;
+        case 'rickshaw':
+          this.tone({ freq: 1400, type: 'sine', dur: 0.12, gain: 0.05 });
+          this.tone({ freq: 1400, type: 'sine', dur: 0.12, gain: 0.05, delay: 0.16 });
+          break;
         case 'gossip':
           [0, 3, 7, 10, 7].forEach((n, i) => this.tone({ freq: midi(70 + n), type: 'sine', dur: 0.14, gain: 0.05, delay: i * 0.07 }));
           break;

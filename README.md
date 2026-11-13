@@ -104,3 +104,4 @@ No cookies, no tracking, no commerce. © 2026 Ajeet.
 - "Enter the bazaar" opens the walkable 3D bazaar (three.js, loaded as a classic script so it also works from file://).
 - Stall cards show real CSS-3D packs on a supermarket shelf that turn on hover.
 - Added: toran bunting, springy/bouncy animation layer, bazaar crowd ambience (the mp3) plus footstep, bell and haggle sounds in the 3D world, mobile polish.
+- 3D bazaar: in-world day/night toggle (animated sun/moon), sound panel, cows, dogs, pigeons, balloon seller, kids, rickshaw, and chatty shopkeepers (ask price, bargain, daily pick).

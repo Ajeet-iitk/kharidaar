@@ -222,6 +222,7 @@
     buildLights();
     buildStalls();
     buildPeople();
+    buildNpcs();
     buildCart();
     bindWorldEvents();
 
@@ -686,6 +687,236 @@
     }
   }
 
+
+  /* ---------------- NPCs: cows, dogs, pigeons, balloon seller, kids, rickshaw ---------------- */
+  const npcs = [];
+  function mat(c) { return new THREE.MeshLambertMaterial({ color: c }); }
+  function box(w, h, d, m, x, y, z) { const b = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m); b.position.set(x, y, z); return b; }
+
+  function makeAnimal(o) {
+    const g = new THREE.Group();
+    const body = mat(o.color), dark = mat(o.dark || 0x2a2018), pale = mat(o.pale || o.color);
+    const S = o.size;
+    g.add(box(.5 * S, .45 * S, 1.0 * S, body, 0, .75 * S, 0));
+    if (o.patch) g.add(box(.52 * S, .3 * S, .35 * S, dark, 0, .82 * S, .1 * S));
+    const head = new THREE.Group();
+    head.position.set(0, .95 * S, .62 * S);
+    head.add(box(.3 * S, .3 * S, .38 * S, pale, 0, 0, 0));
+    head.add(box(.22 * S, .16 * S, .14 * S, dark, 0, -.08 * S, .22 * S));
+    if (o.horns) [-.14, .14].forEach(x => { const h = box(.05 * S, .16 * S, .05 * S, mat(0xf0e6cf), x * S, .2 * S, -.04 * S); h.rotation.z = x > 0 ? -.5 : .5; head.add(h); });
+    if (o.ears) [-.17, .17].forEach(x => head.add(box(.04 * S, .2 * S, .12 * S, dark, x * S, .1 * S, -.06 * S)));
+    g.add(head);
+    const legs = [];
+    [[-.18, .36], [.18, .36], [-.18, -.36], [.18, -.36]].forEach(([x, z]) => {
+      const l = box(.1 * S, .55 * S, .1 * S, o.horns ? pale : dark, x * S, .28 * S, z * S);
+      g.add(l); legs.push(l);
+    });
+    const tail = box(.04 * S, .5 * S, .04 * S, dark, 0, .75 * S, -.55 * S); tail.rotation.x = .3; g.add(tail);
+    const sh = new THREE.Mesh(new THREE.CircleGeometry(.55 * S, 14), new THREE.MeshBasicMaterial({ color: 0x2b1c10, transparent: true, opacity: .2, depthWrite: false }));
+    sh.rotation.x = -Math.PI / 2; sh.position.y = .012; sh.scale.set(.8, 1.2, 1); g.add(sh);
+    g.userData = { legs, head, tail };
+    return g;
+  }
+
+  function buildNpcs() {
+    [[-1.4, -6, 1], [1.7, -16, -1]].forEach(([x, z, dir], i) => {
+      const m = makeAnimal({ color: i ? 0xe9dfcc : 0xf1ece0, dark: i ? 0x5b3a22 : 0x2c2620, pale: 0xe9dfcc, size: 1.25, horns: true, patch: true });
+      m.position.set(x, 0, z); scene.add(m);
+      npcs.push({ kind: 'cow', mesh: m, x, z, dir, speed: .22, phase: i * 2.1, pause: 0, moo: 4 + i * 5 });
+    });
+    [[2.2, -2], [-2.3, -20]].forEach(([x, z], i) => {
+      const m = makeAnimal({ color: i ? 0xc79a5f : 0x8a6a45, dark: 0x3a2a1c, size: .55, ears: true });
+      m.position.set(x, 0, z); scene.add(m);
+      npcs.push({ kind: 'dog', mesh: m, x, z, dir: i ? 1 : -1, speed: .9, phase: i * 3, pause: 0, bark: 8 + i * 6 });
+    });
+    for (let i = 0; i < 6; i++) {
+      const b = new THREE.Group();
+      b.add(box(.14, .12, .22, mat(0x8f95a3), 0, .12, 0));
+      b.add(box(.08, .08, .08, mat(0x6e7484), 0, .2, .13));
+      b.position.set((Math.random() - .5) * 5, 0, -2 - Math.random() * 22);
+      scene.add(b);
+      npcs.push({ kind: 'pigeon', mesh: b, phase: Math.random() * 6, fly: 0 });
+    }
+    const bs = makePerson({ shirt: 0xe0a82e, pants: 0xf2e7d0, skin: 0x9a6a44, scarf: 0xd6336c });
+    const bunch = new THREE.Group();
+    [0xd6336c, 0x0f8b8d, 0xf4a300, 0x7b6cd9, 0x2a9d8f, 0xd1495b].forEach((c, i) => {
+      const b = new THREE.Mesh(new THREE.SphereGeometry(.2, 10, 8), mat(c));
+      b.scale.y = 1.2; b.position.set(Math.cos(i * 1.05) * .28, 2.35 + (i % 3) * .18, Math.sin(i * 1.05) * .28);
+      bunch.add(b);
+      bunch.add(box(.01, 1.1, .01, mat(0xdddddd), b.position.x * .5, 1.75, b.position.z * .5));
+    });
+    bs.add(bunch);
+    bs.position.set(-1, 0, 3); scene.add(bs);
+    npcs.push({ kind: 'walker', mesh: bs, x: -1, z: 3, dir: -1, speed: .5, phase: 1, sway: .5 });
+    [0xd6336c, 0x0f8b8d].forEach((c, i) => {
+      const k = makePerson({ shirt: c, skin: 0xa8714a }); k.scale.setScalar(.62);
+      k.position.set(i ? 1.5 : -1.5, 0, -9 - i * 6); scene.add(k);
+      npcs.push({ kind: 'walker', mesh: k, x: k.position.x, z: k.position.z, dir: i ? 1 : -1, speed: 1.6, phase: i * 2, sway: 1.1 });
+    });
+    const r = new THREE.Group();
+    r.add(box(.9, .1, 1.3, mat(0xd6a21e), 0, .5, -.2));
+    r.add(box(.9, .5, .08, mat(0xd6336c), 0, .85, -.8));
+    r.add(box(1.0, .06, 1.2, mat(0x0f8b8d), 0, 1.5, -.2));
+    [-.45, .45].forEach(x => r.add(box(.05, .98, .05, mat(0x444444), x, 1.0, -.7)));
+    const wh = new THREE.Mesh(new THREE.CylinderGeometry(.34, .34, .06, 14), mat(0x222222));
+    wh.rotation.z = Math.PI / 2;
+    [-.5, .5].forEach(x => { const w = wh.clone(); w.position.set(x, .34, -.2); r.add(w); });
+    const puller = makePerson({ shirt: 0xf4a300, pants: 0xeadfc6, skin: 0x8d5a36 });
+    puller.position.set(0, 0, 1.0); r.add(puller);
+    r.position.set(1.2, 0, 11); r.rotation.y = Math.PI; scene.add(r);
+    npcs.push({ kind: 'rickshaw', mesh: r, puller, x: 1.2, z: 11, dir: -1, speed: 1.5, phase: 0, bell: 3 });
+  }
+
+  function updateNpcs(dt) {
+    const A = window.KharidaarAudio;
+    for (const n of npcs) {
+      const m = n.mesh;
+      if (n.kind === 'cow' || n.kind === 'dog') {
+        n.pause -= dt;
+        if (n.pause <= 0) {
+          n.z += n.dir * n.speed * dt;
+          if (n.z < -24 || n.z > 10) n.dir *= -1;
+          if (Math.random() < dt * .08) n.pause = 2 + Math.random() * 4;
+        }
+        const moving = n.pause <= 0;
+        if (n.cx === undefined) n.cx = n.x;
+        let tx = n.x;
+        const dx = pos.x - n.cx, dz = pos.z - n.z;
+        if (Math.hypot(dx, dz) < 2.2) tx = n.x - Math.sign(dx || 1) * .9;
+        n.cx += (tx - n.cx) * Math.min(1, dt * 2);
+        m.position.set(Math.max(-3.2, Math.min(3.2, n.cx)), 0, n.z);
+        m.rotation.y = n.dir > 0 ? 0 : Math.PI;
+        const sw = moving ? Math.sin(time * (n.kind === 'dog' ? 9 : 3.2) + n.phase) * .45 : 0;
+        const u = m.userData;
+        u.legs.forEach((l, i) => { l.rotation.x = (i % 3 === 0 ? sw : -sw); });
+        u.head.rotation.x = moving ? 0 : Math.sin(time * 1.6 + n.phase) * .35 + .25;
+        u.tail.rotation.z = Math.sin(time * (n.kind === 'dog' ? 10 : 2) + n.phase) * .4;
+        if (A && active) {
+          const key = n.kind === 'cow' ? 'moo' : 'bark';
+          n[key] -= dt;
+          if (n[key] <= 0) {
+            if (Math.hypot(pos.x - m.position.x, pos.z - m.position.z) < 9) A.sfx(key);
+            n[key] = n.kind === 'cow' ? 10 + Math.random() * 12 : 12 + Math.random() * 14;
+          }
+        }
+      } else if (n.kind === 'walker') {
+        n.z += n.dir * n.speed * dt;
+        if (n.z > 10) n.z = -24;
+        if (n.z < -26) n.z = 9;
+        m.position.set(n.x + Math.sin(time * .6 + n.phase) * n.sway, 0, n.z);
+        m.rotation.y = n.dir > 0 ? Math.PI : 0;
+        const u = m.userData, sw = Math.sin(time * 8 + n.phase) * .5;
+        if (u.legL) { u.legL.rotation.x = sw; u.legR.rotation.x = -sw; u.armL.rotation.x = -sw * .7; u.armR.rotation.x = sw * .7; }
+      } else if (n.kind === 'rickshaw') {
+        n.z += n.dir * n.speed * dt;
+        if (n.z < -26) n.z = 14;
+        m.position.set(n.x + Math.sin(time * .4) * .2, Math.abs(Math.sin(time * 9)) * .012, n.z);
+        const u = n.puller.userData;
+        if (u.legL) { const sw = Math.sin(time * 6) * .5; u.legL.rotation.x = sw; u.legR.rotation.x = -sw; }
+        n.bell -= dt;
+        if (n.bell <= 0) { if (A && active && Math.abs(n.z - pos.z) < 10) A.sfx('rickshaw'); n.bell = 9 + Math.random() * 8; }
+      } else if (n.kind === 'pigeon') {
+        const d = Math.hypot(pos.x - m.position.x, pos.z - m.position.z);
+        if (d < 1.8 && !n.fly) n.fly = 1.6;
+        if (n.fly > 0) {
+          n.fly -= dt; m.position.y += dt * 3.2; m.position.z -= dt * 2.6; m.rotation.z = Math.sin(time * 30) * .4;
+          if (n.fly <= 0) {
+            m.position.y = 0; m.rotation.z = 0;
+            m.position.z = Math.max(-24, Math.min(8, m.position.z - 1));
+            m.position.x = (Math.random() - .5) * 5;
+          }
+        } else {
+          m.position.y = Math.max(0, Math.sin(time * 6 + n.phase) - .8) * .1;
+          m.rotation.x = Math.sin(time * 3 + n.phase) > .6 ? .5 : 0;
+        }
+      }
+    }
+  }
+
+  /* ---------------- interactive shopkeepers ---------------- */
+  const KL = {
+    en: {
+      greet: ['Namaste! Fresh stock today, take your time.', 'Aao aao! Best prices on this lane, sahib.', 'Ji, what can I show you?'],
+      price: 'Ask the price', bargain: 'Bargain', pick: "Today's pick",
+      priceSay: (n, p) => `${n} is ${p} today. Honest price, no tricks!`,
+      bargainWin: (n, p, off) => `Arre, you drive a hard bargain! ${n} for ${p}, that is ${off}% off, only for you.`,
+      bargainNo: n => `Not ${n}, sahib, that is already my lowest. Try another item?`,
+      pickSay: (n, p) => `Take ${n} at ${p}. My own family eats it. Added to your trolley!`,
+    },
+    hi: {
+      greet: ['Namaste! Aaj ka taaza maal hai, araam se dekhiye.', 'Aao aao! Is lane mein sabse achchhe daam.', 'Ji, kya dikhaun?'],
+      price: 'Daam poochho', bargain: 'Mol-bhaav', pick: 'Aaj ki pasand',
+      priceSay: (n, p) => `${n} aaj ${p} hai. Seedha daam, koi chaalaaki nahi!`,
+      bargainWin: (n, p, off) => `Arre, aap to pakke mol-bhaav wale ho! ${n} ${p} mein, ${off}% kam, sirf aapke liye.`,
+      bargainNo: n => `${n} mein gunjaish nahi, sahib, yeh sabse kam hai. Kuchh aur dekhiye?`,
+      pickSay: (n, p) => `${n} lijiye, ${p} mein. Hamare ghar mein bhi yahi aata hai. Trolley mein daal diya!`,
+    },
+  };
+  const kl = () => KL[lang() === 'hi' || lang() === 'eh' ? 'hi' : 'en'];
+  const bubble = document.getElementById('worldBubble');
+  const keeperBtns = document.querySelectorAll('[data-keeper]');
+  const dealPrice = Object.create(null);
+  let greeted = null;
+
+  function stallItems(st) { return D.items.filter(it => it.category === st.catKey).slice(0, 6); }
+  function say(text) {
+    bubble.textContent = text;
+    bubble.style.animation = 'none'; void bubble.offsetWidth; bubble.style.animation = '';
+    if (shelfStall) shelfStall.talk = 2.6;
+  }
+  function keeperGreet() {
+    const L = kl();
+    keeperBtns.forEach(b => { b.textContent = L[b.dataset.keeper]; });
+    say(L.greet[Math.floor(Math.random() * L.greet.length)]);
+    if (window.KharidaarAudio) window.KharidaarAudio.sfx('bell');
+  }
+  function keeperAction(kind) {
+    const st = shelfStall; if (!st) return;
+    const items = stallItems(st); if (!items.length) return;
+    const A = window.KharidaarAudio, L = kl();
+    const it = items[Math.floor(Math.random() * items.length)];
+    const name = itemName(it);
+    const unit = it.unit ? ' / ' + it.unit : '';
+    if (kind === 'price') {
+      say(L.priceSay(name, money(dealPrice[it.id] ?? it.latest ?? 0) + unit));
+      if (A) A.sfx('coin');
+    } else if (kind === 'bargain') {
+      if (Math.random() < .68) {
+        const off = 5 + Math.floor(Math.random() * 11);
+        const np = Math.round((it.latest ?? 0) * (1 - off / 100));
+        dealPrice[it.id] = np;
+        say(L.bargainWin(name, money(np) + unit, off));
+        if (A) { A.sfx('haggle'); setTimeout(() => A.sfx('success'), 350); }
+        renderShelf(st);
+      } else { say(L.bargainNo(name)); if (A) A.sfx('error'); }
+    } else if (kind === 'pick') {
+      say(L.pickSay(name, money(dealPrice[it.id] ?? it.latest ?? 0) + unit));
+      if (window.KharidaarBasket) window.KharidaarBasket.add(it.id);
+      if (!cartOn) setCart(true);
+      updateCartHud(); renderShelf(st);
+      if (A) A.sfx('add');
+    }
+  }
+  function updateKeepers(dt) {
+    for (const s of stalls) {
+      const k = s.group.userData.keeper; if (!k) continue;
+      const near = Math.hypot(pos.x - s.hx, pos.z - s.hz) < 3.6;
+      if (near && greeted !== s && shelf.hidden && window.KharidaarAudio) {
+        greeted = s; window.KharidaarAudio.sfx('bell'); s.wave = 2.4;
+      }
+      if (!near && greeted === s) greeted = null;
+      s.wave = Math.max(0, (s.wave || 0) - dt);
+      s.talk = Math.max(0, (s.talk || 0) - dt);
+      const u = k.userData;
+      if (u.armR) u.armR.rotation.z = s.wave > 0 ? 2.4 + Math.sin(time * 12) * .35 : 0;
+      if (u.head) {
+        u.head.rotation.y = near ? Math.sin(time * .9) * .15 : 0;
+        u.head.rotation.x = s.talk > 0 ? Math.sin(time * 14) * .08 : 0;
+      }
+      if (u.torso) u.torso.rotation.z = s.talk > 0 ? Math.sin(time * 6) * .03 : 0;
+    }
+  }
+
   function buildCart() {
     cart = new THREE.Group();
     const metal = new THREE.MeshLambertMaterial({ color: 0xb9c0c7 });
@@ -765,6 +996,8 @@
     browseBtn.addEventListener('click', () => { if (nearest) openShelf(nearest); });
     document.getElementById('worldShelfClose').addEventListener('click', closeShelf);
     cartBtn.addEventListener('click', () => setCart(!cartOn));
+    keeperBtns.forEach(b => b.addEventListener('click', () => keeperAction(b.dataset.keeper)));
+    bindWorldControls();
     helpBtn.addEventListener('click', () => { helpPop.hidden = !helpPop.hidden; });
 
     shelfBody.addEventListener('click', e => {
@@ -883,6 +1116,42 @@
     window.addEventListener('resize', () => { if (active && renderer) resize(); });
   }
 
+
+  /* ---------------- in-world day/night + sound controls ---------------- */
+  function bindWorldControls() {
+    const dayBtn = document.getElementById('worldDayBtn');
+    const dayLabel = document.getElementById('worldDayLabel');
+    const sBtn = document.getElementById('worldSoundBtn');
+    const sPop = document.getElementById('worldSound');
+    const vol = document.getElementById('worldVol');
+    const volLabel = document.getElementById('worldVolLabel');
+    const mus = document.getElementById('worldMusic');
+    const sfxT = document.getElementById('worldSfx');
+    const A = () => window.KharidaarAudio;
+    const hi = () => lang() === 'hi' || lang() === 'eh';
+    const syncDay = () => { dayLabel.textContent = nightTarget > .5 ? (hi() ? 'Raat' : 'Night') : (hi() ? 'Din' : 'Day'); };
+    syncDay();
+    dayBtn.addEventListener('click', () => {
+      nightTarget = nightTarget > .5 ? 0 : 1;
+      syncDay();
+      if (A()) A().sfx(nightTarget ? 'night' : 'whoosh');
+    });
+    sBtn.addEventListener('click', () => {
+      sPop.hidden = !sPop.hidden;
+      sBtn.setAttribute('aria-expanded', String(!sPop.hidden));
+      const a = A();
+      if (a) { vol.value = Math.round(a.volume * 100); volLabel.textContent = vol.value + '%'; mus.checked = !!a.enabled; sfxT.checked = !!a.sfxOn; }
+    });
+    vol.addEventListener('input', () => {
+      A().setVolume(vol.value / 100); volLabel.textContent = vol.value + '%';
+      if (A().amb && !A().amb.paused) A().ambience(true);
+    });
+    mus.addEventListener('change', () => { if (mus.checked) A().start(); else A().stop(); document.body.classList.toggle('music-on', !!A().enabled); });
+    sfxT.addEventListener('change', () => { A().setSfx(sfxT.checked); });
+    new MutationObserver(syncDay).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    setInterval(syncDay, 1000);
+  }
+
   function setCart(on) {
     cartOn = on;
     if (cart) cart.visible = on;
@@ -903,6 +1172,7 @@
     shelf.hidden = false;
     prompt.hidden = true;
     if (window.KharidaarAudio) window.KharidaarAudio.sfx('open');
+    keeperGreet();
   }
 
   function renderShelf(stall) {
@@ -911,11 +1181,12 @@
     shelfTitle.textContent = `${cat.emoji || '🛒'} ${catName(stall.catKey)}`;
     shelfBody.innerHTML = items.map(it => {
       const has = window.KharidaarBasket && window.KharidaarBasket.has(it.id);
-      return `<div class="ws-row">
+      const deal = dealPrice[it.id];
+      return `<div class="ws-row ${deal ? 'is-deal' : ''}">
         <span class="ws-emoji" aria-hidden="true">${itemEmoji(it)}</span>
         <div class="ws-info">
           <h4>${escapeHtml(itemName(it))}</h4>
-          <p>${money(it.latest)}${it.unit ? ' / ' + escapeHtml(it.unit) : ''}</p>
+          <p>${deal ? '<s style="opacity:.55">' + money(it.latest) + '</s> ' + money(deal) : money(it.latest)}${it.unit ? ' / ' + escapeHtml(it.unit) : ''}</p>
         </div>
         <button class="ws-add ${has ? 'is-added' : ''}" type="button" data-ws-add="${escapeHtml(it.id)}" aria-label="${escapeHtml(t('market.add'))}" title="${escapeHtml(t('market.add'))}">
           <svg><use href="#i-${has ? 'check' : 'plus'}"/></svg>
@@ -1092,9 +1363,10 @@
 
   function updateNight(dt, force) {
     if (force) nightMix = nightTarget;
-    else nightMix += (nightTarget - nightMix) * Math.min(1, dt * 1.7);
-    if (Math.abs(nightTarget - nightMix) < .001) nightMix = nightTarget;
-    const n = nightMix;
+    else nightMix += Math.sign(nightTarget - nightMix) * Math.min(Math.abs(nightTarget - nightMix), dt * .32);
+    const n = nightMix * nightMix * (3 - 2 * nightMix);
+    if (sun) { sun.position.y = 25 - n * 40; sun.position.x = -19 + n * 14; }
+    if (moon) { moon.position.y = -14 + n * 38; moon.position.x = 20 - n * 12; }
 
     if (sky) {
       sky.material.uniforms.topColor.value.lerpColors(hexColor('#bcd9e6'), hexColor('#0d1026'), n);
@@ -1142,6 +1414,8 @@
       if (calloutT <= 0) { A.sfx(Math.random() < .5 ? 'bell' : 'haggle'); calloutT = 6 + Math.random() * 8; }
     }
     updatePeople(dt);
+    updateNpcs(dt);
+    updateKeepers(dt);
     updateCart(dt);
     updatePrompt(false);
     if (++tab % 45 === 0) updateCartHud();

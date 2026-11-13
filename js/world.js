@@ -957,7 +957,13 @@
     if (!window.KharidaarAudio) { /* no-op */ }
 
     try {
-      if (!threePromise) threePromise = import(new URL('js/vendor/three.module.js', document.baseURI).href);
+      if (!threePromise) threePromise = window.THREE ? Promise.resolve(window.THREE) : new Promise((res, rej) => {
+        const sc = document.createElement('script');
+        sc.src = 'js/vendor/three.classic.js';
+        sc.onload = () => (window.THREE ? res(window.THREE) : rej(new Error('THREE missing')));
+        sc.onerror = () => rej(new Error('three.js failed to load'));
+        document.head.appendChild(sc);
+      });
       THREE = await threePromise;
       if (!built) { build(); built = true; }
       resize();

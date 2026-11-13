@@ -338,52 +338,62 @@ select:focus-visible { outline: 2px solid var(--accent); }
 .stall-price .unit { font-size: 11px; color: var(--muted); margin-left: 2px; }
 .stall-norm { font-size: 10px; color: var(--muted); letter-spacing: .01em; margin-top: -5px; min-height: 14px; }
 
-/* 3D supermarket shelf on every price card */
+/* 3D supermarket shelf on every price card: real cuboid packs on a plank */
 .shelf3d {
-  position: relative; height: 92px; margin-top: -2px; border-radius: 12px; overflow: hidden;
-  perspective: 460px; border: 1px solid color-mix(in srgb, var(--line) 80%, transparent);
-  background:
-    radial-gradient(120% 90% at 50% 6%, color-mix(in srgb, var(--cat, var(--accent)) 12%, transparent), transparent 62%),
-    linear-gradient(180deg, color-mix(in srgb, var(--cat, var(--accent)) 5%, transparent), transparent 72%);
-}
-.shelf3d::after {
-  content: ""; position: absolute; inset: auto 6% 0; height: 26px;
-  background: radial-gradient(60% 100% at 50% 100%, color-mix(in srgb, var(--cat, var(--accent)) 13%, transparent), transparent 76%);
-  pointer-events: none;
+  position: relative; height: 104px; margin-top: -2px; border-radius: 12px; overflow: hidden;
+  perspective: 520px; border: 1px solid color-mix(in srgb, var(--line) 80%, transparent);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--cat, var(--accent)) 7%, var(--surface-2)), var(--surface-2));
 }
 .shelf3d-stack {
   position: absolute; inset: 0; transform-style: preserve-3d;
-  transform: rotateX(calc((var(--rx, 1.5)) * 1deg)) rotateY(calc((var(--ry, 0)) * 1deg));
-  transition: transform .18s ease-out;
+  transform: rotateX(calc((var(--rx, 0)) * 1deg)) rotateY(calc((var(--ry, 0)) * 1deg));
+  transition: transform .2s ease-out;
 }
-.shelf3d-pack { position: absolute; bottom: 15px; line-height: 1; filter: drop-shadow(0 7px 5px rgba(24, 16, 10, .28)); transform-origin: 50% 100%; }
-.shelf3d-pack b { font-weight: 400; display: block; transform: translateZ(14px); }
-.shelf3d-pack.p1 { left: 19%; font-size: 32px; transform: rotateY(-14deg) translateZ(8px) scale(.92); opacity: .9; }
-.shelf3d-pack.p2 { left: 43%; bottom: 17px; font-size: 40px; transform: rotateY(2deg) translateZ(26px); z-index: 3; }
-.shelf3d-pack.p3 { left: 67%; font-size: 29px; transform: rotateY(17deg) translateZ(4px) scale(.88); opacity: .82; }
+.shelf3d-back {
+  position: absolute; inset: 0 0 20px; transform: translateZ(-30px) scale(1.07);
+  background: repeating-linear-gradient(90deg, transparent 0 17px, rgba(0,0,0,.05) 17px 18px),
+    linear-gradient(180deg, color-mix(in srgb, var(--cat, var(--accent)) 16%, transparent), transparent);
+}
+.shelf3d-row {
+  position: absolute; left: 9%; right: 9%; bottom: 21px; height: 50px;
+  display: flex; justify-content: space-around; align-items: flex-end; transform-style: preserve-3d;
+}
+.box3d {
+  --w: 30px; --h: 42px; --d: 22px;
+  position: relative; width: var(--w); height: var(--h); transform-style: preserve-3d;
+  transform: rotateY(-24deg); transition: transform .5s cubic-bezier(.2,.8,.2,1);
+}
+.box3d.b2 { --h: 50px; --w: 34px; transform: rotateY(-14deg); }
+.box3d.b3 { --h: 36px; transform: rotateY(-30deg); }
+.box3d.b4 { --h: 44px; --w: 26px; transform: rotateY(-18deg); }
+.stall:hover .box3d { transform: rotateY(-62deg); }
+.stall:hover .box3d.b2 { transform: rotateY(-48deg); }
+.box3d .f { position: absolute; display: block; backface-visibility: hidden; }
+.box3d .fr { inset: 0; display: grid; place-items: center; font-size: 20px; font-style: normal; transform: translateZ(calc(var(--d) / 2));
+  background: linear-gradient(160deg, color-mix(in srgb, var(--cat, var(--accent)) 30%, #fffaf0), color-mix(in srgb, var(--cat, var(--accent)) 62%, #fffaf0));
+  border-top: 4px solid var(--cat, var(--accent)); border-radius: 2px; }
+.box3d .fr b { font-weight: 400; line-height: 1; }
+.box3d .fb { inset: 0; transform: rotateY(180deg) translateZ(calc(var(--d) / 2)); background: color-mix(in srgb, var(--cat, var(--accent)) 50%, #fffaf0); }
+.box3d .fl { top: 0; bottom: 0; left: calc(var(--d) / -2); width: var(--d); transform: rotateY(-90deg) translateZ(calc(var(--d) / 2));
+  background: color-mix(in srgb, var(--cat, var(--accent)) 58%, #2b1d12); }
+.box3d .frt { top: 0; bottom: 0; right: calc(var(--d) / -2); width: var(--d); transform: rotateY(90deg) translateZ(calc(var(--d) / 2));
+  background: color-mix(in srgb, var(--cat, var(--accent)) 74%, #2b1d12); }
+.box3d .ft { left: 0; right: 0; top: calc(var(--d) / -2); height: var(--d); transform: rotateX(90deg) translateZ(calc(var(--d) / 2));
+  background: color-mix(in srgb, var(--cat, var(--accent)) 25%, #fffaf0); }
 .shelf3d-plank {
-  position: absolute; left: 7%; right: 7%; bottom: 9px; height: 8px; border-radius: 3px; z-index: 4;
-  background: linear-gradient(180deg, #d8b58a, #a97c50 55%, #7c5636);
-  box-shadow: 0 8px 10px -6px rgba(30, 18, 10, .55), inset 0 1px 0 rgba(255, 245, 225, .55);
-}
-.shelf3d-plank::before {
-  content: ""; position: absolute; inset: 0 2% auto; height: 3px; border-radius: 3px;
-  background: rgba(255, 242, 220, .45);
+  position: absolute; left: 4%; right: 4%; bottom: 11px; height: 10px; border-radius: 3px; z-index: 4;
+  background: linear-gradient(180deg, #e2c295, #a97c50 55%, #7c5636);
+  box-shadow: 0 9px 10px -5px rgba(30, 18, 10, .55), inset 0 1px 0 rgba(255, 245, 225, .55);
+  transform: translateZ(24px);
 }
 .shelf3d-tag {
-  position: absolute; right: 8px; bottom: 24px; z-index: 5;
-  font-size: 8.5px; font-weight: 700; letter-spacing: .02em; color: #4a3728;
-  background: #fff6df; border: 1px solid rgba(90, 62, 34, .18); border-radius: 2px;
-  padding: 2px 5px; transform: rotate(-4deg) translateZ(30px);
-  box-shadow: 0 3px 6px rgba(40, 26, 14, .22);
+  position: absolute; left: 7%; bottom: 3px; z-index: 5;
+  font-size: 9px; font-weight: 700; letter-spacing: .02em; color: #4a3728;
+  background: #fff6df; border: 1px solid rgba(90, 62, 34, .2); border-radius: 2px; padding: 1px 6px;
+  transform: translateZ(26px); box-shadow: 0 2px 4px rgba(40, 26, 14, .2);
 }
-@media (max-width: 720px) {
-  .shelf3d { height: 78px; }
-  .shelf3d-pack.p2 { font-size: 34px; }
-  .shelf3d-pack.p1 { font-size: 27px; }
-  .shelf3d-pack.p3 { font-size: 25px; }
-  .shelf3d-tag { bottom: 21px; }
-}
+@media (prefers-reduced-motion: reduce) { .box3d, .shelf3d-stack { transition: none; } }
+@media (max-width: 720px) { .shelf3d { height: 92px; } .box3d { transform: scale(.85) rotateY(-24deg); } }
 .spark { width: 100%; height: 40px; overflow: visible; }
 .spark path.line { fill: none; stroke: var(--cat, var(--accent)); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
 .spark path.area { fill: color-mix(in srgb, var(--cat, var(--accent)) 11%, transparent); stroke: none; }

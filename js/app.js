@@ -271,9 +271,10 @@
       <h3 class="stall-name">${esc(itemName(it))}${sub ? `<small>${esc(sub)}</small>` : ''}</h3>
       <div class="shelf3d" aria-hidden="true">
         <div class="shelf3d-stack">
-          <span class="shelf3d-pack p1"><b>${itemEmoji(it)}</b></span>
-          <span class="shelf3d-pack p2"><b>${itemEmoji(it)}</b></span>
-          <span class="shelf3d-pack p3"><b>${itemEmoji(it)}</b></span>
+          <div class="shelf3d-back"></div>
+          <div class="shelf3d-row">
+            <span class="box3d b1"><i class="f fr"><b>${itemEmoji(it)}</b></i><i class="f fb"></i><i class="f fl"></i><i class="f frt"></i><i class="f ft"></i></span><span class="box3d b2"><i class="f fr"><b>${itemEmoji(it)}</b></i><i class="f fb"></i><i class="f fl"></i><i class="f frt"></i><i class="f ft"></i></span><span class="box3d b3"><i class="f fr"><b>${itemEmoji(it)}</b></i><i class="f fb"></i><i class="f fl"></i><i class="f frt"></i><i class="f ft"></i></span><span class="box3d b4"><i class="f fr"><b>${itemEmoji(it)}</b></i><i class="f fb"></i><i class="f fl"></i><i class="f frt"></i><i class="f ft"></i></span>
+          </div>
           <i class="shelf3d-plank"></i>
           <span class="shelf3d-tag">₹${new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 }).format(it.latest ?? 0)}</span>
         </div>

@@ -99,3 +99,7 @@ Handy query parameters (they do not affect normal visits):
 Made by **Ajeet** with sunsets, sound, and a stubborn spreadsheet.
 Fonts: Fraunces, Outfit, Noto Sans Devanagari (Google Fonts).
 No cookies, no tracking, no commerce. © 2026 Ajeet.
+
+## Notes
+- "Enter the bazaar" opens the walkable 3D bazaar (three.js, loaded as a classic script so it also works from file://).
+- Stall cards show real CSS-3D packs on a supermarket shelf that turn on hover.

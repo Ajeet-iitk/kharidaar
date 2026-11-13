@@ -1014,8 +1014,8 @@ html, body { overflow-x: clip; }
 @media (max-width: 720px) {
   .hero-inner { flex: 0 0 auto; padding-bottom: 0; }
   .hero-stats { margin-bottom: 0; }
-  .hero::after { content: ""; display: block; flex: 1 0 auto; min-height: min(38svh, 320px); order: 3; }
-  .scene-panel { order: 2; margin-top: 18px; }
+  .hero::after { content: ""; display: block; flex: 1 0 auto; min-height: min(46svh, 380px); order: 2; }
+  .scene-panel { order: 3; margin-top: 0; }
   .hero-veil {
     background: linear-gradient(180deg, color-mix(in srgb, var(--scene-veil) 55%, transparent) 0%, color-mix(in srgb, var(--scene-veil) 35%, transparent) 55%, transparent 70%);
   }

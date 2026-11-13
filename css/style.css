@@ -1021,3 +1021,5 @@ html, body { overflow-x: clip; }
   }
   .hero-inner { background: none; }
 }
+
+@media (max-width: 720px) { .hero-stats { display: none; } }

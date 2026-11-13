@@ -1079,3 +1079,6 @@ body.world-night .world-chip .wd-moon { display: block; }
 .game-best { color: #ffd77a; font-weight: 700; }
 .game-stage.is-playing .game-overlay { display: none; }
 @media (max-width: 720px) { .game-stage { height: 68svh; min-height: 400px; } .game-hud b { font-size: 21px; } .game-hud > div { padding: 8px 12px; } }
+
+.wonder-game .world-badge { background: var(--pink); }
+.wonder-game { background: linear-gradient(160deg, color-mix(in srgb, var(--marigold) 14%, var(--surface)), var(--surface)); }

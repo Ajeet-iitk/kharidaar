@@ -105,3 +105,4 @@ No cookies, no tracking, no commerce. © 2026 Ajeet.
 - Stall cards show real CSS-3D packs on a supermarket shelf that turn on hover.
 - Added: toran bunting, springy/bouncy animation layer, bazaar crowd ambience (the mp3) plus footstep, bell and haggle sounds in the 3D world, mobile polish.
 - 3D bazaar: in-world day/night toggle (animated sun/moon), sound panel, cows, dogs, pigeons, balloon seller, kids, rickshaw, and chatty shopkeepers (ask price, bargain, daily pick).
+- Game section "Sabzi Ninja": swipe-to-slice with the diary's real edible items, patakha bombs, combos, best score saved locally.

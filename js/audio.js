@@ -300,6 +300,14 @@
         case 'haggle':
           [0, 4, 2, 7].forEach((n, i) => this.tone({ freq: midi(64 + n), type: 'triangle', dur: 0.12, gain: 0.04, delay: i * 0.1 }));
           break;
+        case 'slice':
+          this.noiseBurst({ dur: 0.14, gain: 0.07, from: 5200, to: 1400, q: 1.2 });
+          this.tone({ freq: 880 + Math.random() * 300, type: 'triangle', dur: 0.08, gain: 0.04, slide: -300 });
+          break;
+        case 'bomb':
+          this.noiseBurst({ dur: 0.8, gain: 0.16, from: 900, to: 90, q: 0.5 });
+          this.tone({ freq: 90, type: 'sawtooth', dur: 0.6, gain: 0.12, slide: -60 });
+          break;
         case 'moo':
           this.tone({ freq: 150, type: 'sawtooth', dur: 0.9, gain: 0.05, slide: -45 });
           this.tone({ freq: 225, type: 'triangle', dur: 0.9, gain: 0.03, slide: -60 });

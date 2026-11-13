@@ -34,6 +34,9 @@
 <svg class="sprite" aria-hidden="true" width="0" height="0">
   <symbol id="i-bag" viewBox="0 0 24 24"><path d="M6 8h12l1.2 12H4.8L6 8Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 9V6.5a3 3 0 0 1 6 0V9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M10 13.2c.5-1.7 3.1-1.7 3.6 0M10.2 13.2h3.6M10.6 15.4h3.2" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></symbol>
   <symbol id="i-cart" viewBox="0 0 24 24"><path d="M3 4h2l2.2 10.2h9.9L19 7H6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="18.5" r="1.6" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="16.5" cy="18.5" r="1.6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 10h8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24"><path d="M4 8.5h3l1.4-2h7.2l1.4 2h3V19H4V8.5Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="12" cy="13.5" r="3.4" fill="none" stroke="currentColor" stroke-width="1.7"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><rect x="5" y="4.5" width="14" height="16" rx="2.4" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M9 4.5V3.5h6v1M8.5 10h7M8.5 13.5h7M8.5 17h4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+  <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M9.6 9.6a2.5 2.5 0 1 1 3.6 2.2c-.8.4-1.2.9-1.2 1.8M12 16.6v.1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
   <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5 5l1.4 1.4M17.6 17.6 19 19M19 5l-1.4 1.4M6.4 17.6 5 19" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
   <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.4A8.4 8.4 0 0 1 9.6 4a8.4 8.4 0 1 0 10.4 10.4Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M17.5 4.5v2M16.5 5.5h2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></symbol>
   <symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V6.5l10-2v11" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="6.5" cy="18" r="2.5" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="16.5" cy="15.5" r="2.5" fill="none" stroke="currentColor" stroke-width="1.7"/></symbol>
@@ -522,11 +525,11 @@
       <button class="world-chip" id="worldCartBtn" type="button" aria-pressed="false">
         <svg><use href="#i-cart"/></svg><span data-i18n="world.cart">Trolley</span><b id="worldCartCount">0</b>
       </button>
-      <button class="world-chip" id="worldMissionBtn" type="button" aria-pressed="false"><span aria-hidden="true">📝</span><span id="worldMissionLabel">Mission</span></button>
-      <button class="world-round" id="worldPhotoBtn" type="button" aria-label="Take a photo" title="Photo mode">📸</button>
+      <button class="world-chip" id="worldMissionBtn" type="button" aria-pressed="false"><svg><use href="#i-list"/></svg><span id="worldMissionLabel">Mission</span></button>
+      <button class="world-round" id="worldPhotoBtn" type="button" aria-label="Take a photo" title="Photo mode"><svg><use href="#i-camera"/></svg></button>
       <button class="world-chip" id="worldDayBtn" type="button" aria-label="Day or night"><svg class="wd-sun"><use href="#i-sun"/></svg><svg class="wd-moon"><use href="#i-moon"/></svg><span id="worldDayLabel">Day</span></button>
       <button class="world-round" id="worldSoundBtn" type="button" aria-label="Sound" aria-expanded="false"><svg><use href="#i-music"/></svg></button>
-      <button class="world-round" id="worldHelpBtn" type="button" aria-label="Controls">?</button>
+      <button class="world-round" id="worldHelpBtn" type="button" aria-label="Controls"><svg><use href="#i-help"/></svg></button>
       <button class="world-exit" id="worldExit" type="button"><span data-i18n="world.exit">Leave the bazaar</span><svg><use href="#i-close"/></svg></button>
     </div>
   </div>

@@ -64,8 +64,8 @@
     <nav class="nav-links" aria-label="Primary">
       <a href="#bazaar" data-nav="bazaar" data-i18n="nav.bazaar">Bazaar</a>
       <a href="#ledger" data-nav="ledger" data-i18n="nav.ledger">Ledger</a>
-      <a href="#explore" data-nav="explore" data-i18n="nav.explore">Explore</a>
       <a href="#game" data-nav="game" data-i18n="nav.game">Game</a>
+      <a href="#explore" data-nav="explore" data-i18n="nav.explore">Explore</a>
       <a href="#about" data-nav="about" data-i18n="nav.about">About</a>
     </nav>
 
@@ -215,6 +215,79 @@
       <ol class="ledger-list" id="ledgerList"></ol>
       <div class="ledger-more">
         <button class="btn btn-ghost" id="ledgerMore" type="button" data-i18n="ledger.more">Turn a few more pages</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section game-section" id="game">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow" data-i18n="game.eyebrow">Game</p>
+          <h2 data-i18n="game.title">Play the bazaar</h2>
+        </div>
+        <p class="section-sub" data-i18n="game.sub">Slice flying groceries in Sabzi Ninja, or push a handcart through a cow-clogged lane in Thela Rush. Every item is a real price from the diary.</p>
+      </div>
+            <div class="game-tabs" role="tablist" aria-label="Games">
+        <button class="game-tab is-on" type="button" role="tab" aria-selected="true" data-game-tab="ninja">🥷 Sabzi Ninja</button>
+        <button class="game-tab" type="button" role="tab" aria-selected="false" data-game-tab="thela">🛺 Thela Rush</button>
+      </div>
+      <div class="game-panel" data-panel="ninja">
+      <div class="game-hud" aria-live="polite">
+        <div><small data-i18n="game.score">Score</small><b id="gameScore">0</b></div>
+        <div><small data-i18n="game.best">Best</small><b id="gameBest">0</b></div>
+        <div><small data-i18n="game.basket">Groceries sliced</small><b id="gameWorth">₹0</b></div>
+        <div class="game-lives" id="gameLives" aria-label="Lives"></div>
+      </div>
+      <div class="game-stage" id="gameStage">
+        <canvas id="gameCanvas" aria-label="Sabzi Ninja game: swipe across flying groceries to slice them"></canvas>
+        <div class="game-overlay" id="gameStart">
+          <p class="game-emoji" aria-hidden="true">🍅🥭🧅</p>
+          <h3 data-i18n="game.startTitle">Ready to slice?</h3>
+          <p data-i18n="game.how">Drag your finger or mouse across the groceries. Miss three and you are out. Slice a 🧨 and it is over.</p>
+          <button class="btn btn-solid" id="gamePlay" type="button"><span data-i18n="game.play">Start slicing</span></button>
+        </div>
+        <div class="game-overlay" id="gameOver" hidden>
+          <p class="game-emoji" aria-hidden="true">🥭</p>
+          <h3 id="gameOverTitle">Game over</h3>
+          <p id="gameOverStats"></p>
+          <button class="btn btn-solid" id="gameAgain" type="button"><span data-i18n="game.again">Play again</span></button>
+        </div>
+      </div>
+      </div>
+      <div class="game-panel" data-panel="thela" hidden>
+        <div class="game-hud" aria-live="polite">
+          <div><small>Score</small><b id="thelaScore">0</b></div>
+          <div><small>Best</small><b id="thelaBest">0</b></div>
+          <div><small>Distance</small><b id="thelaDist">0m</b></div>
+          <div class="game-lives" id="thelaLives" aria-label="Lives"></div>
+        </div>
+        <div class="tl-list-bar">
+          <span class="tl-list-label">📝 Memsahib wants</span>
+          <div class="tl-list" id="thelaList"></div>
+          <i class="tl-timer" id="thelaTimer" aria-hidden="true"></i>
+        </div>
+        <div class="game-stage thela-stage" id="thelaStage">
+          <canvas id="thelaCanvas" aria-label="Thela Rush: steer a handcart down a busy bazaar lane, collect the shopping list and dodge cows and rickshaws"></canvas>
+          <div class="tl-controls" aria-hidden="false">
+            <button type="button" id="thelaLeft" aria-label="Move left">◀</button>
+            <button type="button" id="thelaHorn" class="tl-horn" aria-label="Honk the horn">📯 <span>HORN</span></button>
+            <button type="button" id="thelaRight" aria-label="Move right">▶</button>
+          </div>
+          <div class="game-overlay" id="thelaStart">
+            <p class="game-emoji" aria-hidden="true">🛺🐄🛒</p>
+            <h3>Thela Rush</h3>
+            <p>Push your handcart down the lane. Grab what Memsahib's list asks for before the timer runs out. Dodge cows, rickshaws and puddles. Honk to shoo sleepy cows aside. Chai ☕ makes you unstoppable.</p>
+            <p class="game-keys"><kbd>←</kbd> <kbd>→</kbd> / swipe to steer · <kbd>Space</kbd> / swipe up to honk</p>
+            <button class="btn btn-solid" id="thelaPlay" type="button"><span>Start the rush</span></button>
+          </div>
+          <div class="game-overlay" id="thelaOver" hidden>
+            <p class="game-emoji" aria-hidden="true">🍅</p>
+            <h3 id="thelaOverTitle">Thela toppled!</h3>
+            <p id="thelaOverStats"></p>
+            <button class="btn btn-solid" id="thelaAgain" type="button"><span>Run again</span></button>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -382,79 +455,6 @@
             <button class="mini-btn" type="button" data-wonder="world" data-i18n="wonder.photo.go">Take a photo</button>
           </div>
         </article>
-      </div>
-    </div>
-  </section>
-
-  <section class="section game-section" id="game">
-    <div class="container">
-      <div class="section-head">
-        <div>
-          <p class="eyebrow" data-i18n="game.eyebrow">Game</p>
-          <h2 data-i18n="game.title">Play the bazaar</h2>
-        </div>
-        <p class="section-sub" data-i18n="game.sub">Slice flying groceries in Sabzi Ninja, or push a handcart through a cow-clogged lane in Thela Rush. Every item is a real price from the diary.</p>
-      </div>
-            <div class="game-tabs" role="tablist" aria-label="Games">
-        <button class="game-tab is-on" type="button" role="tab" aria-selected="true" data-game-tab="ninja">🥷 Sabzi Ninja</button>
-        <button class="game-tab" type="button" role="tab" aria-selected="false" data-game-tab="thela">🛺 Thela Rush</button>
-      </div>
-      <div class="game-panel" data-panel="ninja">
-      <div class="game-hud" aria-live="polite">
-        <div><small data-i18n="game.score">Score</small><b id="gameScore">0</b></div>
-        <div><small data-i18n="game.best">Best</small><b id="gameBest">0</b></div>
-        <div><small data-i18n="game.basket">Groceries sliced</small><b id="gameWorth">₹0</b></div>
-        <div class="game-lives" id="gameLives" aria-label="Lives"></div>
-      </div>
-      <div class="game-stage" id="gameStage">
-        <canvas id="gameCanvas" aria-label="Sabzi Ninja game: swipe across flying groceries to slice them"></canvas>
-        <div class="game-overlay" id="gameStart">
-          <p class="game-emoji" aria-hidden="true">🍅🥭🧅</p>
-          <h3 data-i18n="game.startTitle">Ready to slice?</h3>
-          <p data-i18n="game.how">Drag your finger or mouse across the groceries. Miss three and you are out. Slice a 🧨 and it is over.</p>
-          <button class="btn btn-solid" id="gamePlay" type="button"><span data-i18n="game.play">Start slicing</span></button>
-        </div>
-        <div class="game-overlay" id="gameOver" hidden>
-          <p class="game-emoji" aria-hidden="true">🥭</p>
-          <h3 id="gameOverTitle">Game over</h3>
-          <p id="gameOverStats"></p>
-          <button class="btn btn-solid" id="gameAgain" type="button"><span data-i18n="game.again">Play again</span></button>
-        </div>
-      </div>
-      </div>
-      <div class="game-panel" data-panel="thela" hidden>
-        <div class="game-hud" aria-live="polite">
-          <div><small>Score</small><b id="thelaScore">0</b></div>
-          <div><small>Best</small><b id="thelaBest">0</b></div>
-          <div><small>Distance</small><b id="thelaDist">0m</b></div>
-          <div class="game-lives" id="thelaLives" aria-label="Lives"></div>
-        </div>
-        <div class="tl-list-bar">
-          <span class="tl-list-label">📝 Memsahib wants</span>
-          <div class="tl-list" id="thelaList"></div>
-          <i class="tl-timer" id="thelaTimer" aria-hidden="true"></i>
-        </div>
-        <div class="game-stage thela-stage" id="thelaStage">
-          <canvas id="thelaCanvas" aria-label="Thela Rush: steer a handcart down a busy bazaar lane, collect the shopping list and dodge cows and rickshaws"></canvas>
-          <div class="tl-controls" aria-hidden="false">
-            <button type="button" id="thelaLeft" aria-label="Move left">◀</button>
-            <button type="button" id="thelaHorn" class="tl-horn" aria-label="Honk the horn">📯 <span>HORN</span></button>
-            <button type="button" id="thelaRight" aria-label="Move right">▶</button>
-          </div>
-          <div class="game-overlay" id="thelaStart">
-            <p class="game-emoji" aria-hidden="true">🛺🐄🛒</p>
-            <h3>Thela Rush</h3>
-            <p>Push your handcart down the lane. Grab what Memsahib's list asks for before the timer runs out. Dodge cows, rickshaws and puddles. Honk to shoo sleepy cows aside. Chai ☕ makes you unstoppable.</p>
-            <p class="game-keys"><kbd>←</kbd> <kbd>→</kbd> / swipe to steer · <kbd>Space</kbd> / swipe up to honk</p>
-            <button class="btn btn-solid" id="thelaPlay" type="button"><span>Start the rush</span></button>
-          </div>
-          <div class="game-overlay" id="thelaOver" hidden>
-            <p class="game-emoji" aria-hidden="true">🍅</p>
-            <h3 id="thelaOverTitle">Thela toppled!</h3>
-            <p id="thelaOverStats"></p>
-            <button class="btn btn-solid" id="thelaAgain" type="button"><span>Run again</span></button>
-          </div>
-        </div>
       </div>
     </div>
   </section>
